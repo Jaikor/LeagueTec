@@ -10,7 +10,7 @@ namespace Evade
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("IS MY NAME CORRECT YET FFS");
+            Console.WriteLine("IS MY NAME CORRECT YET FFS!");
         }
     }
 }

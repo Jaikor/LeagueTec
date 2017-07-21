@@ -15,15 +15,15 @@ namespace Perplexed_Ezreal
         public static Obj_AI_Hero Player;
         static void Main(string[] args)
         {
-            Player = ObjectManager.GetLocalPlayer();
-            if (Player.ChampionName != "Ezreal")
-                return;
-
             GameEvents.GameStart += GameEvents_GameStart;
         }
 
         private static void GameEvents_GameStart()
         {
+            Player = ObjectManager.GetLocalPlayer();
+            if (Player.ChampionName != "Ezreal")
+                return;
+
             MenuManager.Initialize();
             SpellManager.Initialize();
 

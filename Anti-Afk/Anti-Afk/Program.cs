@@ -1,10 +1,5 @@
 ﻿using Aimtec;
-using Aimtec.SDK;
 using Aimtec.SDK.Events;
-using Aimtec.SDK.Orbwalking;
-using Aimtec.SDK.Extensions;
-using System.Linq;
-using System;
 
 namespace Anti_Afk
 {

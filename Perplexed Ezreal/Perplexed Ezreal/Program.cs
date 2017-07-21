@@ -7,7 +7,6 @@ using Aimtec.SDK.TargetSelector;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Damage;
 using System.Linq;
-using System;
 
 namespace Perplexed_Ezreal
 {
@@ -21,7 +20,6 @@ namespace Perplexed_Ezreal
                 return;
 
             GameEvents.GameStart += GameEvents_GameStart;
-
         }
 
         private static void GameEvents_GameStart()

@@ -18,6 +18,12 @@ namespace Drawvade
         private static void GameEvents_GameStart()
         {
             SpellBook.OnCastSpell += SpellBook_OnCastSpell;
+            GameObject.OnCreate += GameObject_OnCreate;
+        }
+
+        private static void GameObject_OnCreate(GameObject sender)
+        {
+
         }
 
         private static void SpellBook_OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs e)

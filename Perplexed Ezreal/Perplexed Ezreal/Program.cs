@@ -6,6 +6,7 @@ using Aimtec.SDK.Orbwalking;
 using Aimtec.SDK.TargetSelector;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Damage;
+using Aimtec.SDK.Prediction.Skillshots;
 using System.Linq;
 
 namespace Perplexed_Ezreal
@@ -78,13 +79,15 @@ namespace Perplexed_Ezreal
             if (MenuManager.Combo["comboQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready)
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
-                if (target.IsValidTarget())
+                var pred = SpellManager.Q.GetPrediction(target);
+                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.Combo["comboW"].As<MenuBool>().Enabled && SpellManager.W.Ready)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
-                if (target.IsValidTarget())
+                var pred = SpellManager.W.GetPrediction(target);
+                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }
@@ -95,13 +98,15 @@ namespace Perplexed_Ezreal
             if (MenuManager.Harass["harassQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
-                if (target.IsValidTarget())
+                var pred = SpellManager.Q.GetPrediction(target);
+                if (target.IsValidTarget() && pred.HitChance == HitChance.High) 
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.Harass["harassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
-                if (target.IsValidTarget())
+                var pred = SpellManager.W.GetPrediction(target);
+                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }
@@ -113,13 +118,15 @@ namespace Perplexed_Ezreal
             if (MenuManager.AutoHarass["autoHarassQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
-                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
+                var pred = SpellManager.Q.GetPrediction(target);
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance == HitChance.High)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.AutoHarass["autoHarassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
-                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
+                var pred = SpellManager.W.GetPrediction(target);
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance == HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }

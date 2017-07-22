@@ -53,9 +53,12 @@ namespace Perplexed_Viktor
                 if (!target.IsInRange(SpellManager.E.Range))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    Render.Line(bestCastPos.Start.ToScreenPosition(), bestCastPos.End.ToScreenPosition(), Color.Red);
-                    Render.Text(bestCastPos.Start.ToScreenPosition(), Color.Black, "B");
-                    Render.Text(bestCastPos.End.ToScreenPosition(), Color.Black, "A");
+                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                    {
+                        Render.Line(bestCastPos.Start.ToScreenPosition(), bestCastPos.End.ToScreenPosition(), Color.Red);
+                        Render.Text(bestCastPos.Start.ToScreenPosition(), Color.Black, "B");
+                        Render.Text(bestCastPos.End.ToScreenPosition(), Color.Black, "A");
+                    }
                 }
                 //Render.Text(target.ServerPosition.ToScreenPosition().X - 10, target.ServerPosition.ToScreenPosition().Y - 50, Color.Red, $"Combo dmg: {GetDamageCanDeal(target)}");
             }
@@ -116,11 +119,11 @@ namespace Perplexed_Viktor
             }
             if (MenuManager.Combo["comboE"].As<MenuBool>().Enabled && SpellManager.E.Ready)
             {
-                var target = TargetSelector.GetTarget(SpellManager.E.Range + SpellManager.E2.Range);
+                var target = TargetSelector.GetTarget(SpellManager.E3.Range);
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    if(bestCastPos.Prediction.HitChance >= HitChance.High)
+                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                         SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }
@@ -145,7 +148,7 @@ namespace Perplexed_Viktor
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    if (bestCastPos.Prediction.HitChance >= HitChance.High)
+                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                         SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }

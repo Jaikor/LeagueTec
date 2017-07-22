@@ -1,7 +1,8 @@
-﻿using Aimtec.SDK.Menu;
+﻿using Aimtec;
+using Aimtec.SDK.Menu;
 using Aimtec.SDK.Menu.Components;
 using Aimtec.SDK.Orbwalking;
-
+using System.Linq;
 namespace Perplexed_Ezreal
 {
     public static class MenuManager
@@ -10,10 +11,17 @@ namespace Perplexed_Ezreal
         public static Menu Combo;
         public static Menu Harass;
         public static Menu AutoHarass;
+        public static Menu AutoHarassWhitelist;
         public static Menu LastHitting;
         public static Menu LastHitting_Q;
         public static Menu Ultimate;
         public static Menu Drawing;
+
+        public static string[] Marksmen =
+        {
+            "Ashe", "Caitlyn", "Corki", "Draven", "Ezreal", "Graves", "Jhin", "Jinx", "Kalista", "Kindred", "KogMaw",
+            "Lucian", "MissFortune", "Quinn", "Sivir", "Tristana", "Twitch", "Urgot", "Varus", "Vayne", "Xayah"
+        };
 
         public static void Initialize()
         {
@@ -47,9 +55,13 @@ namespace Perplexed_Ezreal
                 AutoHarass = new Menu("autoHarass", "Auto Harass")
                 {
                     new MenuBool("autoHarassQ", "Q"),
-                    new MenuBool("autoHarassW", "W", false),
-                    new MenuSlider("autoHarassManaPct", "Mana % >=", 30, 1, 99)
+                    new MenuBool("autoHarassW", "W", false)
                 };
+                AutoHarassWhitelist = new Menu("autoHarassWhitelist", "Whitelist");
+                foreach(var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy))
+                    AutoHarassWhitelist.Add(new MenuBool(enemy.ChampionName, enemy.ChampionName, Marksmen.Contains(enemy.ChampionName)));
+                AutoHarass.Add(AutoHarassWhitelist);
+                AutoHarass.Add(new MenuSlider("autoHarassManaPct", "Mana % >=", 30, 1, 99));
                 Root.Add(AutoHarass);
             }
             //Last Hitting

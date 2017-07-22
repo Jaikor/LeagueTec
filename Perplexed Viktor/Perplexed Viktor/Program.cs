@@ -53,7 +53,7 @@ namespace Perplexed_Viktor
                 if (!target.IsInRange(SpellManager.E.Range))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                    if (bestCastPos.Prediction.HitChance >= HitChance.High || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                     {
                         Render.Line(bestCastPos.Start.ToScreenPosition(), bestCastPos.End.ToScreenPosition(), Color.Red);
                         Render.Text(bestCastPos.Start.ToScreenPosition(), Color.Black, "B");
@@ -123,7 +123,7 @@ namespace Perplexed_Viktor
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                    if (bestCastPos.Prediction.HitChance >= HitChance.High || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                         SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }
@@ -148,7 +148,7 @@ namespace Perplexed_Viktor
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    if (bestCastPos.Prediction.HitChance >= HitChance.Medium || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                    if (bestCastPos.Prediction.HitChance >= HitChance.High || Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
                         SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }
@@ -166,9 +166,11 @@ namespace Perplexed_Viktor
         {
             if (!target.IsInRange(SpellManager.E.Range))
             {
-                var pred = SpellManager.E3.GetPrediction(target);
-                var startPos = pred.UnitPosition;
                 var endPos = Player.ServerPosition.Extend(target.ServerPosition, SpellManager.E.Range);
+                var predInput = SpellManager.E.GetPredictionInput(target);
+                predInput.From = endPos;
+                var pred = Prediction.GetPrediction(predInput);
+                var startPos = pred.UnitPosition;
                 return new BestCastPosition
                 {
                     Start = startPos,

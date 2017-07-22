@@ -57,6 +57,7 @@ namespace Perplexed_Viktor
                     Render.Text(startPos.ToScreenPosition(), Color.Black, "A");
                     Render.Text(endPos.ToScreenPosition(), Color.Black, "B");
                 }
+                //Render.Text(target.ServerPosition.ToScreenPosition().X - 10, target.ServerPosition.ToScreenPosition().Y - 50, Color.Red, $"Combo dmg: {GetDamageCanDeal(target)}");
             }
         }
 
@@ -180,16 +181,24 @@ namespace Perplexed_Viktor
         public static double GetDamageCanDeal(Obj_AI_Base target)
         {
             double dmg = 0;
+            var mana = Player.Mana;
+            var qCost = SpellManager.Q.Instance().Cost;
+            var eCost = SpellManager.E.Instance().Cost;
+            var rCost = SpellManager.R.Instance().Cost;
             if (SpellManager.Q.Ready)
             {
                 dmg = Player.GetSpellDamage(target, SpellSlot.Q);
                 dmg += (Player.SpellBook.GetSpell(SpellSlot.Q).Level * 20) + Player.GetAutoAttackDamage(target) + (Player.TotalAbilityDamage / 2);
+                mana -= qCost;
             }
             if (Player.HasItem(ItemId.LichBane))
                 dmg += (Player.BaseAttackDamage * 0.75) + (Player.TotalAbilityDamage / 2);
-            if(SpellManager.E.Ready)
+            if (SpellManager.E.Ready && mana >= eCost)
+            {
                 dmg += Player.GetSpellDamage(target, SpellSlot.E);
-            if(SpellManager.R.Ready && !UltCasted)
+                mana -= eCost;
+            }
+            if(SpellManager.R.Ready && mana >= eCost && !UltCasted)
                 dmg += GetUltTotalDamage(target);
             return dmg;
         }

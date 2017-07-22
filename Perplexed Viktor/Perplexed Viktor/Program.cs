@@ -184,7 +184,7 @@ namespace Perplexed_Viktor
                 return new BestCastPosition
                 {
                     Start = pred.UnitPosition,
-                    End = target.ServerPosition,
+                    End = pred.CastPosition,
                     Prediction = pred
                 };
             }

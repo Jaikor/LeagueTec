@@ -17,7 +17,7 @@ namespace Perplexed_Viktor
             R = new Spell(SpellSlot.R, 700);
 
             W.SetSkillshot(0.25f, 300, float.MaxValue, false, SkillshotType.Circle);
-            E.SetSkillshot(0.25f, 100, 1350, false, SkillshotType.Line);
+            E.SetSkillshot(0.25f, 100, 1350, false, SkillshotType.Line, true);
             R.SetSkillshot(0.25f, 450, int.MaxValue, false, SkillshotType.Circle);
         }
     }

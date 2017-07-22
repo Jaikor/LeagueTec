@@ -113,13 +113,13 @@ namespace Perplexed_Ezreal
             if (MenuManager.AutoHarass["autoHarassQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
-                if (target.IsValidTarget() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.AutoHarass["autoHarassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
-                if (target.IsValidTarget() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled)
                     SpellManager.W.Cast(target);
             }
         }

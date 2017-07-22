@@ -80,14 +80,14 @@ namespace Perplexed_Ezreal
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
                 var pred = SpellManager.Q.GetPrediction(target);
-                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
+                if (target.IsValidTarget() && pred.HitChance >= HitChance.High)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.Combo["comboW"].As<MenuBool>().Enabled && SpellManager.W.Ready)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
                 var pred = SpellManager.W.GetPrediction(target);
-                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
+                if (target.IsValidTarget() && pred.HitChance >= HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }
@@ -99,14 +99,14 @@ namespace Perplexed_Ezreal
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
                 var pred = SpellManager.Q.GetPrediction(target);
-                if (target.IsValidTarget() && pred.HitChance == HitChance.High) 
+                if (target.IsValidTarget() && pred.HitChance >= HitChance.High) 
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.Harass["harassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
                 var pred = SpellManager.W.GetPrediction(target);
-                if (target.IsValidTarget() && pred.HitChance == HitChance.High)
+                if (target.IsValidTarget() && pred.HitChance >= HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }
@@ -119,14 +119,14 @@ namespace Perplexed_Ezreal
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
                 var pred = SpellManager.Q.GetPrediction(target);
-                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance == HitChance.High)
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance >= HitChance.High)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.AutoHarass["autoHarassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
                 var pred = SpellManager.W.GetPrediction(target);
-                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance == HitChance.High)
+                if (target.IsValidTarget() && !Player.IsUnderEnemyTurret() && MenuManager.AutoHarassWhitelist[target.ChampionName].As<MenuBool>().Enabled && pred.HitChance >= HitChance.High)
                     SpellManager.W.Cast(target);
             }
         }

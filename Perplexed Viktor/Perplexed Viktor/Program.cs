@@ -6,6 +6,7 @@ using Aimtec.SDK.Orbwalking;
 using Aimtec.SDK.TargetSelector;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Damage;
+using Aimtec.SDK.Prediction.Skillshots;
 using System.Linq;
 using System;
 
@@ -51,11 +52,10 @@ namespace Perplexed_Viktor
             {
                 if (!target.IsInRange(SpellManager.E.Range))
                 {
-                    var startPos = Player.ServerPosition.Extend(target.ServerPosition, SpellManager.E.Range);
-                    var endPos = target.ServerPosition;
-                    Render.Line(startPos.ToScreenPosition(), endPos.ToScreenPosition(), Color.Red);
-                    Render.Text(startPos.ToScreenPosition(), Color.Black, "A");
-                    Render.Text(endPos.ToScreenPosition(), Color.Black, "B");
+                    var bestCastPos = GetBestCastPositionE(target);
+                    Render.Line(bestCastPos.Start.ToScreenPosition(), bestCastPos.End.ToScreenPosition(), Color.Red);
+                    Render.Text(bestCastPos.Start.ToScreenPosition(), Color.Black, "B");
+                    Render.Text(bestCastPos.End.ToScreenPosition(), Color.Black, "A");
                 }
                 //Render.Text(target.ServerPosition.ToScreenPosition().X - 10, target.ServerPosition.ToScreenPosition().Y - 50, Color.Red, $"Combo dmg: {GetDamageCanDeal(target)}");
             }
@@ -120,7 +120,8 @@ namespace Perplexed_Viktor
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
+                    if(bestCastPos.Prediction.HitChance >= HitChance.High)
+                        SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }
             }
@@ -129,7 +130,7 @@ namespace Perplexed_Viktor
         private static void Harass()
         {
             var minManaPct = MenuManager.Harass["harassManaPct"].As<MenuSlider>().Value;
-            if(MenuManager.Harass["harassQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
+            if (MenuManager.Harass["harassQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
                 if (target.IsValidTarget())
@@ -144,7 +145,8 @@ namespace Perplexed_Viktor
                 if (target.IsValidTarget() && (!HasQBuff || !target.IsInRange(Player.AttackRange)))
                 {
                     var bestCastPos = GetBestCastPositionE(target);
-                    SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
+                    if (bestCastPos.Prediction.HitChance >= HitChance.High)
+                        SpellManager.E.Cast(bestCastPos.Start, bestCastPos.End);
                     return;
                 }
             }
@@ -159,23 +161,28 @@ namespace Perplexed_Viktor
 
         public static BestCastPosition GetBestCastPositionE(Obj_AI_Base target)
         {
-
             if (!target.IsInRange(SpellManager.E.Range))
             {
-                var startPos = target.ServerPosition;
+                var pred = SpellManager.E3.GetPrediction(target);
+                var startPos = pred.UnitPosition;
                 var endPos = Player.ServerPosition.Extend(target.ServerPosition, SpellManager.E.Range);
                 return new BestCastPosition
                 {
                     Start = startPos,
-                    End = endPos
+                    End = endPos,
+                    Prediction = pred
                 };
             }
             else
+            {
+                var pred = SpellManager.E.GetPrediction(target);
                 return new BestCastPosition
                 {
-                    Start = target.ServerPosition,
-                    End = target.ServerPosition
+                    Start = pred.UnitPosition,
+                    End = target.ServerPosition,
+                    Prediction = pred
                 };
+            }
         }
 
         public static double GetDamageCanDeal(Obj_AI_Base target)
@@ -198,7 +205,7 @@ namespace Perplexed_Viktor
                 dmg += Player.GetSpellDamage(target, SpellSlot.E);
                 mana -= eCost;
             }
-            if(SpellManager.R.Ready && mana >= eCost && !UltCasted)
+            if (SpellManager.R.Ready && mana >= eCost && !UltCasted)
                 dmg += GetUltTotalDamage(target);
             return dmg;
         }

@@ -24,7 +24,8 @@ namespace Perplexed_Viktor
                     new MenuBool("comboQ", "Q"),
                     new MenuBool("comboW", "W"),
                     new MenuBool("comboE", "E"),
-                    new MenuBool("comboR", "R")
+                    new MenuBool("comboR", "R"),
+                    new MenuBool("comboRKillable", "Only R when killable")
                 };
                 Root.Add(Combo);
             }

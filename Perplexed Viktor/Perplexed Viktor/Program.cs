@@ -92,7 +92,13 @@ namespace Perplexed_Viktor
                 var target = TargetSelector.GetTarget(SpellManager.R.Range);
                 if (target.IsValidTarget())
                 {
-                    if (GetUltTotalDamage(target) > target.Health || GetDamageCanDeal(target) > target.Health)
+                    if(MenuManager.Combo["comboRKillable"].As<MenuBool>().Enabled)
+                    {
+                        if(GetUltTotalDamage(target) > target.Health)
+                            SpellManager.R.Cast(target);
+                            return;
+                    }
+                    else if (GetDamageCanDeal(target) > target.Health)
                     {
                         SpellManager.R.Cast(target);
                         return;

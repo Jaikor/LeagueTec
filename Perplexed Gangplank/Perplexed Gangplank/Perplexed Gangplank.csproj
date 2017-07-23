@@ -71,7 +71,6 @@
   <ItemGroup>
     <Compile Include="Barrel.cs" />
     <Compile Include="BarrelManager.cs" />
-    <Compile Include="BestCastPosition.cs" />
     <Compile Include="MenuManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

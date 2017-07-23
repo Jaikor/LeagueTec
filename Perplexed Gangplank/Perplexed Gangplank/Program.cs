@@ -32,13 +32,8 @@ namespace Perplexed_Gangplank
 
             BarrelManager.Barrels = new List<Barrel>();
             GameObject.OnCreate += GameObject_OnCreate;
-            BuffManager.OnAddBuff += BuffManager_OnAddBuff;
             Game.OnUpdate += Game_OnUpdate;
             Render.OnPresent += Render_OnPresent;
-        }
-
-        private static void BuffManager_OnAddBuff(Obj_AI_Base sender, Buff buff)
-        {
         }
 
         private static void GameObject_OnCreate(GameObject sender)
@@ -50,6 +45,8 @@ namespace Perplexed_Gangplank
         private static void Game_OnUpdate()
         {
             BarrelManager.Barrels.RemoveAll(x => x.Object.IsDead);
+            if(MenuManager.Killsteal["killstealQ"].Enabled)
+                Killsteal();
             //var closestHittingBarrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
             //if (closestHittingBarrel != null)
             //{
@@ -70,6 +67,9 @@ namespace Perplexed_Gangplank
             {
                 case OrbwalkingMode.Combo:
                     Combo();
+                    break;
+                case OrbwalkingMode.Mixed:
+                    Harass();
                     break;
             }
         }
@@ -122,6 +122,27 @@ namespace Perplexed_Gangplank
             }
         }
 
+        private static void Harass()
+        {
+            var target = TargetSelector.GetTarget(SpellManager.Q.Range);
+            var minManaPct = MenuManager.Harass["harassManaPct"].Value;
+            if (target.IsValidTarget() && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
+                SpellManager.Q.Cast(target);
+        }
+
+        private static void Killsteal()
+        {
+            if (SpellManager.Q.Ready)
+            {
+                var target = Utility.GetAllEnemiesInRange(SpellManager.Q.Range).Where(x => Utility.CanKillWithQ(x)).OrderBy(x => x.Health).FirstOrDefault();
+                if (target != null)
+                {
+                    SpellManager.Q.Cast(target);
+                    return;
+                }
+            }
+        }
+
         private static void AttackNearestBarrel()
         {
             var nearestBarrel = BarrelManager.GetNearestBarrel();
@@ -134,16 +155,17 @@ namespace Perplexed_Gangplank
 
         private static void Render_OnPresent()
         {
-            var target = TargetSelector.GetTarget(SpellManager.E2.Range);
-            if(target != null)
-                Render.Circle(target.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Green);
-            Render.Circle(Player.ServerPosition, SpellManager.Q.Range, 30, Color.White);
-            Render.Circle(Player.ServerPosition, SpellManager.E.Range, 30, Color.Orange);
+            if(MenuManager.Drawing["drawQ"].Enabled)
+                Render.Circle(Player.ServerPosition, SpellManager.Q.Range, 30, Color.White);
+            if(MenuManager.Drawing["drawE"].Enabled)
+                Render.Circle(Player.ServerPosition, SpellManager.E.Range, 30, Color.Orange);
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {
-                Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
-                Render.Circle(barrel.ServerPosition, SpellManager.ChainRadius, 30, Color.Orange);
+                if(MenuManager.Drawing["drawBarrelExplode"].Enabled)
+                    Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
+                if(MenuManager.Drawing["drawBarrelChain"].Enabled)
+                    Render.Circle(barrel.ServerPosition, SpellManager.ChainRadius, 30, Color.Orange);
                 //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
             }
         }

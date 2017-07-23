@@ -1,5 +1,6 @@
 ﻿using Aimtec;
 using Aimtec.SDK.Extensions;
+using Aimtec.SDK.Damage;
 using System.Collections.Generic;
 using System.Linq;
 namespace Perplexed_Gangplank
@@ -19,6 +20,11 @@ namespace Perplexed_Gangplank
         public static List<Obj_AI_Hero> GetAllEnemiesInRange(float range)
         {
             return ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && x.IsInRange(range) && x.IsValidTarget()).ToList();
+        }
+
+        public static bool CanKillWithQ(Obj_AI_Base target)
+        {
+            return Player.GetSpellDamage(target, SpellSlot.Q) >= target.Health;
         }
     }
 }

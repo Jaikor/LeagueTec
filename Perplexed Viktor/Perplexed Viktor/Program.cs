@@ -95,7 +95,7 @@ namespace Perplexed_Viktor
                     if (MenuManager.Combo["comboRKillable"].As<MenuBool>().Enabled)
                     {
                         if (GetUltTotalDamage(target) > target.Health)
-                        {//
+                        {
                             SpellManager.R.Cast(target);
                             return;
                         }

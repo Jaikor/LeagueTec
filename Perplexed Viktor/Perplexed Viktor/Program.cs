@@ -96,13 +96,13 @@ namespace Perplexed_Viktor
                     {
                         if (GetUltTotalDamage(target) > target.Health)
                         {
-                            SpellManager.R.Cast(target);
+                            SpellManager.R.Cast(target.ServerPosition);
                             return;
                         }
                     }
                     else if (GetDamageCanDeal(target) > target.Health)
                     {
-                        SpellManager.R.Cast(target);
+                        SpellManager.R.Cast(target.ServerPosition);
                         return;
                     }
                 }
@@ -121,7 +121,7 @@ namespace Perplexed_Viktor
                 var target = TargetSelector.GetTarget(SpellManager.W.Range);
                 if (target.IsValidTarget())
                 {
-                    SpellManager.W.Cast(target);
+                    SpellManager.W.Cast(target.ServerPosition);
                     return;
                 }
             }

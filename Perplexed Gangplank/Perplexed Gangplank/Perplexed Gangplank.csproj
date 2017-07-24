@@ -53,10 +53,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aimtec">
-      <HintPath>..\..\..\Aimtec.SDK\Aimtec.SDK\bin\x86\Debug\Aimtec.dll</HintPath>
+      <HintPath>C:\Users\Ryan\AppData\Local\AimtecLoader\Data\System\Aimtec.dll</HintPath>
     </Reference>
     <Reference Include="Aimtec.SDK">
-      <HintPath>..\..\..\Aimtec.SDK\Aimtec.SDK\bin\x86\Debug\Aimtec.SDK.dll</HintPath>
+      <HintPath>C:\Users\Ryan\AppData\Local\AimtecLoader\Data\System\Aimtec.SDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

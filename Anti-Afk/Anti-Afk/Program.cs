@@ -1,30 +1,24 @@
 ﻿using Aimtec;
 using Aimtec.SDK.Events;
+using Aimtec.SDK.Orbwalking;
 
 namespace Anti_Afk
 {
-    class Program
+    public class Program
     {
-        static float LastMoveTime;
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             GameEvents.GameStart += GameEvents_GameStart;
         }
 
         private static void GameEvents_GameStart()
         {
-            LastMoveTime = Game.TickCount;
-            Game.OnUpdate += Game_OnUpdate;
+            Game.OnNotifyAway += Game_OnNotifyAway;
         }
 
-        private static void Game_OnUpdate()
+        private static void Game_OnNotifyAway(GameNotifyAwayEventArgs e)
         {
-            //Console.WriteLine(Game.TickCount);
-            if(Game.TickCount - LastMoveTime >= 60000)
-            {
-                ObjectManager.GetLocalPlayer().IssueOrder(OrderType.MoveTo, ObjectManager.GetLocalPlayer().Position);
-                LastMoveTime = Game.TickCount;
-            }
+            Orbwalker.Implementation.Move(Game.CursorPos);
         }
     }
 }

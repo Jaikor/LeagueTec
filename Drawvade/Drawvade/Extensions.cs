@@ -9,10 +9,9 @@ namespace Drawvade
 {
     public static class Extensions
     {
-        public static Vector2 WorldToScreen(this Vector3 world)
+        public static Vector3 Perpendicular(this Vector3 v)
         {
-            Render.WorldToScreen(world, out Vector2 screen);
-            return screen;
+            return new Vector3(-v.Z, v.Y, v.X);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Anti_Afk
 
         private static void GameEvents_GameStart()
         {
+            //Yay
             Game.OnNotifyAway += Game_OnNotifyAway;
         }
 

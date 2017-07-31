@@ -13,13 +13,13 @@ namespace Anti_Afk
 
         private static void GameEvents_GameStart()
         {
-            //Yay
             Game.OnNotifyAway += Game_OnNotifyAway;
         }
 
         private static void Game_OnNotifyAway(GameNotifyAwayEventArgs e)
         {
-            Orbwalker.Implementation.Move(Game.CursorPos);
+            e.IgnoreDialog = true;
+            Orbwalker.Implementation.Move(ObjectManager.GetLocalPlayer().ServerPosition);
         }
     }
 }

@@ -145,6 +145,7 @@ namespace Perplexed_Twisted_Fate
 
         private static void Killsteal()
         {
+            //
             if (MenuManager.Killsteal["stealQ"].Enabled && SpellManager.Q.Ready)
             {
                 var target = ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && x.IsInRange(SpellManager.Q.Range) && Player.GetSpellDamage(x, SpellSlot.Q) > x.Health && x.IsValidTarget()).OrderBy(x => x.Distance(Player)).FirstOrDefault();

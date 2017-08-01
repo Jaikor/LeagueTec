@@ -121,22 +121,22 @@ namespace Drawvade
             });
             #endregion
             #region Ashe
-            Spells.Add(new SpellData
-            {
-                ChampionName = "Ashe",
-                SpellName = "Volley",
-                MissileName = "VolleyAttack",
-                Delay = 250,
-                Range = 1250,
-                Radius = 60,
-                MultipleCount = 9,
-                MultipleAngle = 4.62f * (float)Math.PI / 180,
-                MissileSpeed = 1500,
-                Slot = SpellSlot.W,
-                Type = SkillshotType.Line,
-                FixedRange = true,
-                AddHitbox = true
-            });
+            //Spells.Add(new SpellData
+            //{
+            //    ChampionName = "Ashe",
+            //    SpellName = "Volley",
+            //    MissileName = "VolleyAttack",
+            //    Delay = 250,
+            //    Range = 1250,
+            //    Radius = 60,
+            //    MultipleCount = 9,
+            //    MultipleAngle = 4.62f * (float)Math.PI / 180,
+            //    MissileSpeed = 1500,
+            //    Slot = SpellSlot.W,
+            //    Type = SkillshotType.Line,
+            //    FixedRange = true,
+            //    AddHitbox = true
+            //});
             Spells.Add(new SpellData
             {
                 ChampionName = "Ashe",

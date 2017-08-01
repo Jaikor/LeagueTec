@@ -1,4 +1,5 @@
-﻿using Aimtec.SDK.Menu;
+﻿using System;
+using Aimtec.SDK.Menu;
 using Aimtec.SDK.Menu.Components;
 using Aimtec.SDK.Orbwalking;
 using Aimtec.SDK.Util;
@@ -45,6 +46,8 @@ namespace Perplexed_Gangplank
                 Killsteal = new Menu("killsteal", "Killsteal")
                 {
                     new MenuBool("killstealQ", "Killsteal with Q"),
+                    new MenuBool("killstealR", "Killsteal with R"),
+                    new MenuSlider("killstealRWaves", "R if # of waves can kill", 6, 1, 12)
                 };
                 Root.Add(Killsteal);
             }

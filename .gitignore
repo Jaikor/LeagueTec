@@ -242,5 +242,4 @@ ModelManifest.xml
 .paket/paket.exe
 
 # FAKE - F# Make
-/Drawvade
 .fake/

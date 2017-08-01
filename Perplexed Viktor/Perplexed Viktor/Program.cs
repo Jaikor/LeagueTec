@@ -67,7 +67,10 @@ namespace Perplexed_Viktor
         private static void SpellBook_OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs e)
         {
             if (sender.IsMe && e.Slot == SpellSlot.Q)
+            {
                 Orbwalker.Implementation.ResetAutoAttackTimer();
+                Orbwalker.Implementation.Move(Game.CursorPos);
+            }
         }
 
         private static void Game_OnUpdate()

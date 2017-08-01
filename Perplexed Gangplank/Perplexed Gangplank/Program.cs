@@ -44,9 +44,10 @@ namespace Perplexed_Gangplank
 
         private static void Game_OnUpdate()
         {
+            //var target = TargetSelector.GetSelectedTarget();
+            //Console.WriteLine($"R Damage: {Utility.GetRDamage(target, MenuManager.Killsteal["killstealRWaves"].Value)}");
             BarrelManager.Barrels.RemoveAll(x => x.Object.IsDead);
-            if(MenuManager.Killsteal["killstealQ"].Enabled)
-                Killsteal();
+            Killsteal();
             //var closestHittingBarrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
             //if (closestHittingBarrel != null)
             //{
@@ -132,12 +133,22 @@ namespace Perplexed_Gangplank
 
         private static void Killsteal()
         {
-            if (SpellManager.Q.Ready)
+            if (SpellManager.Q.Ready && MenuManager.Killsteal["killstealQ"].Enabled)
             {
                 var target = Utility.GetAllEnemiesInRange(SpellManager.Q.Range).Where(x => Utility.CanKillWithQ(x)).OrderBy(x => x.Health).FirstOrDefault();
                 if (target != null)
                 {
                     SpellManager.Q.Cast(target);
+                    return;
+                }
+            }
+            if(SpellManager.R.Ready && MenuManager.Killsteal["killstealR"].Enabled)
+            {
+                var waves = MenuManager.Killsteal["killstealRWaves"].Value;
+                var target = Utility.GetAllEnemiesInRange(SpellManager.R.Range).Where(x => Utility.CanKillWithR(x, waves) && x.Distance(Player) > SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
+                if(target != null)
+                {
+                    SpellManager.R.Cast(target.ServerPosition);
                     return;
                 }
             }

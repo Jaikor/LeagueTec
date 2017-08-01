@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Aimtec;
 using Aimtec.SDK.Menu.Components;
 using Aimtec.SDK.Events;
@@ -8,6 +9,7 @@ using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Damage;
 using Aimtec.SDK.Prediction.Skillshots;
 using System.Linq;
+using Aimtec.SDK.Util.Cache;
 
 namespace Perplexed_Ezreal
 {
@@ -99,7 +101,7 @@ namespace Perplexed_Ezreal
             {
                 var target = TargetSelector.GetTarget(SpellManager.Q.Range);
                 var pred = SpellManager.Q.GetPrediction(target);
-                if (target.IsValidTarget() && pred.HitChance >= HitChance.High) 
+                if (target.IsValidTarget() && pred.HitChance >= HitChance.High)
                     SpellManager.Q.Cast(target);
             }
             if (MenuManager.Harass["harassW"].As<MenuBool>().Enabled && SpellManager.W.Ready && Player.ManaPercent() >= minManaPct)
@@ -137,7 +139,7 @@ namespace Perplexed_Ezreal
             if (MenuManager.LastHitting_Q["lastHittingQ"].As<MenuBool>().Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)
             {
                 var onlyOutOfRange = MenuManager.LastHitting_Q["lastHittingQOutOfRange"].As<MenuBool>().Enabled;
-                var minions = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsInRange(SpellManager.Q.Range) && x.IsEnemy && Player.GetSpellDamage(x, SpellSlot.Q) >= x.Health && x.IsValidTarget()).OrderBy(x => x.Health);
+                var minions = GameObjects.EnemyMinions.Where(x => x.IsInRange(SpellManager.Q.Range) && x.UnitSkinName.Contains("Minion") && Player.GetSpellDamage(x, SpellSlot.Q) >= x.Health && x.IsValidTarget()).OrderBy(x => x.Health);
                 var target = onlyOutOfRange ? minions.FirstOrDefault(x => !x.IsInRange(Player.AttackRange)) : minions.FirstOrDefault();
                 if (target.IsValidTarget())
                     SpellManager.Q.Cast(target);

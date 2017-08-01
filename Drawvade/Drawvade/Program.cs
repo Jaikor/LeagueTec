@@ -75,7 +75,7 @@ namespace Drawvade
                 return;
             if (!sender.IsEnemy)
                 return;
-            Console.WriteLine($"Spell {e.SpellData.Name} casted. ({e.Sender.NetworkId}) (Speed: {e.SpellData.MissileSpeed}) (Range: {e.SpellData.CastRange} | {e.SpellData.CastRadius})");
+            //Console.WriteLine($"Spell {e.SpellData.Name} casted. ({e.Sender.NetworkId}) (Speed: {e.SpellData.MissileSpeed}) (Range: {e.SpellData.CastRange} | {e.SpellData.CastRadius})");
 
             var spellData = SpellDatabase.GetByName(e.SpellData.Name);
             if (spellData == null)
@@ -136,7 +136,7 @@ namespace Drawvade
                 return;
             if (!sender.IsEnemy)
                 return;
-            Console.WriteLine($"Missile '{missile.SpellData.Name}' created. ({missile.NetworkId}) (Speed: {missile.SpellData.MissileSpeed})");
+            //Console.WriteLine($"Missile '{missile.SpellData.Name}' created. ({missile.NetworkId}) (Speed: {missile.SpellData.MissileSpeed})");
             var spellData = SpellDatabase.GetByMissile(missile.SpellData.Name);
             if (spellData == null)
                 return;
@@ -161,7 +161,7 @@ namespace Drawvade
         {
             if (!(sender is MissileClient missile))
                 return;
-            Console.WriteLine($"Destroy {missile.SpellData.Name} ({missile.NetworkId})");
+            //Console.WriteLine($"Destroy {missile.SpellData.Name} ({missile.NetworkId})");
             var spellData = SpellDatabase.GetByMissile(missile.SpellData.Name);
             if (spellData == null)
                 return;

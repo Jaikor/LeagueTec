@@ -3,6 +3,8 @@ using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Prediction.Skillshots;
 using System.Collections.Generic;
 using System.Linq;
+using Aimtec.SDK.Util.Cache;
+
 namespace Perplexed_Gangplank
 {
     public static class BarrelManager
@@ -12,8 +14,14 @@ namespace Perplexed_Gangplank
         {
             return barrel.Object.Distance(target) <= SpellManager.ExplosionRadius;
         }
+        public static List<Obj_AI_Hero> GetEnemiesInChainRadius(Barrel barrel)
+        {
+            //Returns enemies within the barrel's chain radius, but outside of its explosion radius.
+            return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius && barrel.Object.Distance(x) >= SpellManager.ExplosionRadius).ToList();
+        }
         public static List<Barrel> GetBarrelsThatWillHit()
         {
+            //Returns all barrels that can explode on an enemy.
             var barrelsWillHit = new List<Barrel>();
             foreach(var enemy in Utility.GetAllEnemiesInRange(float.MaxValue))
                 barrelsWillHit.AddRange(GetBarrelsThatWillHit(enemy));
@@ -35,9 +43,9 @@ namespace Perplexed_Gangplank
         {
             return Barrels.Where(x => !x.Object.IsDead).OrderBy(x => x.Object.Distance(Utility.Player)).FirstOrDefault();
         }
-        //public static BestCastPosition GetBestCastPositionE(Obj_AI_Base target)
-        //{
-
-        //}
+        public static Barrel GetNearestBarrel(Vector3 position)
+        {
+            return Barrels.Where(x => !x.Object.IsDead).OrderBy(x => x.Object.Distance(position)).FirstOrDefault();
+        }
     }
 }

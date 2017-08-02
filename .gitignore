@@ -242,4 +242,5 @@ ModelManifest.xml
 .paket/paket.exe
 
 # FAKE - F# Make
+/Perplexed Camille
 .fake/

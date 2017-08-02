@@ -170,13 +170,13 @@ namespace Perplexed_Gangplank
                 {
                     if (nearestBarrelToCursor.Object.Distance(Game.CursorPos) <= SpellManager.ChainRadius)
                     {
-                        if (SpellManager.E.Ready)
+                        if (SpellManager.E.Ready && nearestBarrelToCursor.CanChain)
                             SpellManager.E.Cast(Game.CursorPos);
                     }
                     else
                     {
                         var bestPos = nearestBarrelToCursor.ServerPosition.Extend(Game.CursorPos, (SpellManager.ChainRadius - 5));
-                        if (SpellManager.E.Ready)
+                        if (SpellManager.E.Ready && nearestBarrelToCursor.CanChain)
                             SpellManager.E.Cast(bestPos);
                     }
                 }

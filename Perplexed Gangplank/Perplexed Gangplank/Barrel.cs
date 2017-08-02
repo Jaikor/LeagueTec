@@ -27,5 +27,9 @@ namespace Perplexed_Gangplank
             DecayRate = Utility.GetDecayRate();
             TimeAt1HP = Created + ((1000 * DecayRate) * 2);
         }
+        public static implicit operator Barrel(GameObject barrel)
+        {
+            return BarrelManager.Barrels.First(x => x.ServerPosition == barrel.ServerPosition);
+        }
     }
 }

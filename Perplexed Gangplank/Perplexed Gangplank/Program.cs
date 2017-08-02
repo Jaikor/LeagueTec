@@ -40,23 +40,38 @@ namespace Perplexed_Gangplank
 
         private static void ObjAiBaseOnOnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
         {
-            if (sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
+            if(sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
             {
-                var barrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
-                if (barrel != null)
+                var barrel = (Barrel)e.Target;
+                if (barrel.Object.Distance(Player) >= 560 && barrel.Object.Distance(Player) <= 640 && BarrelManager.GetChainedBarrels(barrel).Count == 1) //1 part combo only works at max range.
                 {
                     var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
                     var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Health).FirstOrDefault();
                     if (bestEnemy != null)
                     {
-                        if (bestEnemy.IsInRange(SpellManager.E.Range))
-                        {
-                            Console.WriteLine("CAST DAT TING");
-                            SpellManager.E.Cast(bestEnemy.ServerPosition);
-                        }
+                        var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, barrel);
+                        if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && barrel.CanChain)
+                            SpellManager.E.Cast(bestChainPosition);
                     }
                 }
             }
+            //if (sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
+            //{
+            //    var barrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
+            //    if (barrel != null)
+            //    {
+            //        var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
+            //        var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Health).FirstOrDefault();
+            //        if (bestEnemy != null)
+            //        {
+            //            if (bestEnemy.IsInRange(SpellManager.E.Range))
+            //            {
+            //                Console.WriteLine("CAST DAT TING");
+            //                SpellManager.E.Cast(bestEnemy.ServerPosition);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private static void GameObject_OnCreate(GameObject sender)
@@ -130,23 +145,12 @@ namespace Perplexed_Gangplank
                     else
                     {
                         //No chained barrels will hit, so let's chain them.
-                        if (nearestBarrel.Object.Distance(target) <= SpellManager.ChainRadius)
+                        var bestChainPosition = BarrelManager.GetBestChainPosition(target, nearestBarrel);
+                        if(bestChainPosition != Vector3.Zero && target.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && nearestBarrel.CanChain)
                         {
-                            if (target.IsInRange(SpellManager.E.Range) && SpellManager.E.Ready && nearestBarrel.CanChain)
-                            {
-                                SpellManager.E.Cast(target.ServerPosition);
-                                return;
-                            }
-                        }
-                        else if (nearestBarrel.Object.Distance(target) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
-                        {
-                            var bestCastPos = nearestBarrel.ServerPosition.Extend(target.ServerPosition, (SpellManager.ChainRadius - 5));
-                            Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestCastPos.ToScreenPosition(), 5, true, Color.Red);
-                            if (target.IsInRange(SpellManager.E.Range) && SpellManager.E.Ready && Player.Distance(bestCastPos) <= SpellManager.E.Range && nearestBarrel.CanChain)
-                            {
-                                SpellManager.E.Cast(bestCastPos);
-                                return;
-                            }
+                            Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestChainPosition.ToScreenPosition(), 5, true, Color.Red);
+                            SpellManager.E.Cast(bestChainPosition);
+
                         }
                     }
                 }

@@ -9,6 +9,7 @@ namespace Perplexed_Gangplank
 {
     public static class BarrelManager
     {
+        public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
         public static List<Barrel> Barrels;
         public static bool BarrelWillHit(Barrel barrel, Obj_AI_Base target)
         {
@@ -17,7 +18,7 @@ namespace Perplexed_Gangplank
         public static List<Obj_AI_Hero> GetEnemiesInChainRadius(Barrel barrel)
         {
             //Returns enemies within the barrel's chain radius, but outside of its explosion radius.
-            return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius && barrel.Object.Distance(x) >= SpellManager.ExplosionRadius).ToList();
+            return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius && barrel.Object.Distance(x) >= SpellManager.ExplosionRadius).ToList();
         }
         public static List<Barrel> GetBarrelsThatWillHit()
         {
@@ -47,5 +48,17 @@ namespace Perplexed_Gangplank
         {
             return Barrels.Where(x => !x.Object.IsDead).OrderBy(x => x.Object.Distance(position)).FirstOrDefault();
         }
+        public static Vector3 GetBestChainPosition(Obj_AI_Base target, Barrel barrel)
+        {
+            if (barrel.Object.Distance(target) <= SpellManager.ChainRadius)
+                    return target.ServerPosition;
+            if (barrel.Object.Distance(target) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
+            {
+                var bestCastPos = barrel.ServerPosition.Extend(target.ServerPosition, SpellManager.ChainRadius - 5);
+                return bestCastPos;
+            }
+            return Vector3.Zero;
+        }
+
     }
 }

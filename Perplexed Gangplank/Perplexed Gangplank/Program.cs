@@ -43,14 +43,14 @@ namespace Perplexed_Gangplank
             if(sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
             {
                 var barrel = (Barrel)e.Target;
-                if (barrel.Object.Distance(Player) >= 560 && barrel.Object.Distance(Player) <= 640 && BarrelManager.GetChainedBarrels(barrel).Count == 1) //1 part combo only works at max range.
+                if (barrel.Object.Distance(Player) >= 530 && barrel.Object.Distance(Player) <= 660 && BarrelManager.GetChainedBarrels(barrel).Count == 1) //1 part combo only works at max range.
                 {
                     var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
                     var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Health).FirstOrDefault();
                     if (bestEnemy != null)
                     {
                         var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, barrel);
-                        if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && barrel.CanChain)
+                        if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready)
                             SpellManager.E.Cast(bestChainPosition);
                     }
                 }

@@ -1,6 +1,5 @@
 ﻿using Aimtec;
 using Aimtec.SDK.Extensions;
-using Aimtec.SDK.Prediction.Skillshots;
 using System.Collections.Generic;
 using System.Linq;
 using Aimtec.SDK.Util.Cache;
@@ -42,11 +41,11 @@ namespace Perplexed_Gangplank
         }
         public static Barrel GetNearestBarrel()
         {
-            return Barrels.Where(x => !x.Object.IsDead).OrderBy(x => x.Object.Distance(Utility.Player)).FirstOrDefault();
+            return Barrels.Where(x => !x.Object.IsDead && x.Object.Distance(Player) <= SpellManager.E.Range).OrderBy(x => x.Object.Distance(Utility.Player)).FirstOrDefault();
         }
         public static Barrel GetNearestBarrel(Vector3 position)
         {
-            return Barrels.Where(x => !x.Object.IsDead).OrderBy(x => x.Object.Distance(position)).FirstOrDefault();
+            return Barrels.Where(x => !x.Object.IsDead && x.Object.Distance(Player) <= SpellManager.E.Range).OrderBy(x => x.Object.Distance(position)).FirstOrDefault();
         }
         public static Vector3 GetBestChainPosition(Obj_AI_Base target, Barrel barrel)
         {

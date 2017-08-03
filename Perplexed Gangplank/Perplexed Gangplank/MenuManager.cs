@@ -9,6 +9,7 @@ namespace Perplexed_Gangplank
     public static class MenuManager
     {
         public static Menu Root;
+        public static Menu Keys;
         public static Menu Combo;
         public static Menu Harass;
         public static Menu LastHit;
@@ -23,13 +24,21 @@ namespace Perplexed_Gangplank
                 Root = new Menu("Gangplank", "Perplexed Gangplank", true);
                 Orbwalker.Implementation.Attach(Root);
             }
+            //Keys
+            {
+                Keys = new Menu("keys", "Keys")
+                {
+                    new MenuKeyBind("comboToMouse", "Combo To Mouse", KeyCode.A, KeybindType.Press),
+                    new MenuKeyBind("qBarrel", "Q nearest barrel", KeyCode.T, KeybindType.Press)
+                };
+                Root.Add(Keys);
+            }
             //Combo
             {
                 Combo = new Menu("combo", "Combo")
                 {
                     //new MenuBool("dontEIfKillsteal", "Don't use barrels if target can die to Q"),
-                    new MenuBool("explodeQCooldown","Explode barrel with auto attack if Q is on cooldown"),
-                    new MenuKeyBind("comboToMouse", "Combo To Mouse", KeyCode.A, KeybindType.Press)
+                    new MenuBool("explodeQCooldown","Explode barrel with auto attack if Q is on cooldown")
                     //new MenuBool("qCantCombo", "Q enemy if can't barrel combo whatsoever")
                 };
                 Root.Add(Combo);

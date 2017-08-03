@@ -98,14 +98,24 @@ namespace Perplexed_Gangplank
             //    }
             //}
 
-            if(MenuManager.Combo["comboToMouse"].Enabled)
-                ComboToMouse();
-
             if ((Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed || Orbwalker.Implementation.Mode == OrbwalkingMode.Lasthit ||
-               Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear) && MenuManager.Misc["aaBarrel"].Enabled)
+               Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear || MenuManager.Keys["comboToMouse"].Enabled || MenuManager.Keys["qBarrel"].Enabled) && MenuManager.Misc["aaBarrel"].Enabled)
             {
                 AttackNearestBarrel();
             }
+
+            if (MenuManager.Keys["comboToMouse"].Enabled)
+            {
+                AttackNearestBarrel();
+                ComboToMouse();
+            }
+
+            if (MenuManager.Keys["qBarrel"].Enabled)
+            {
+                AttackNearestBarrel();
+                QNearestBarrel();
+            }
+
             switch (Orbwalker.Implementation.Mode)
             {
                 case OrbwalkingMode.Combo:
@@ -189,6 +199,17 @@ namespace Perplexed_Gangplank
             {
                 if (Player.Distance(Game.CursorPos) <= SpellManager.E.Range && SpellManager.E.Ready)
                     SpellManager.E.Cast(Game.CursorPos);
+            }
+        }
+
+        private static void QNearestBarrel()
+        {
+            Orbwalker.Implementation.Move(Game.CursorPos);
+            var barrel = BarrelManager.GetNearestBarrel();
+            if(barrel != null)
+            {
+                if (barrel.CanQ && SpellManager.Q.Ready)
+                    SpellManager.Q.Cast(barrel.Object);
             }
         }
 

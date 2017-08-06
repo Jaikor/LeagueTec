@@ -10,7 +10,7 @@ namespace Perplexed_Gangplank
     public class Barrel
     {
         public Obj_AI_Base Object;
-        public float Created;
+        public int Created;
         public float Health => Object.Health;
         public Vector3 Position => Object.Position;
         public Vector3 ServerPosition => Object.ServerPosition;
@@ -20,7 +20,7 @@ namespace Perplexed_Gangplank
         public bool CanQ => Game.TickCount >= CanQTime || Health == 1;
         public float CanChainTime => TimeAt1HP - (250f * 2);
         public bool CanChain => Game.TickCount >= CanChainTime || Health == 1;
-        public Barrel(Obj_AI_Base barrel, float created)
+        public Barrel(Obj_AI_Base barrel, int created)
         {
             Object = barrel;
             Created = created;

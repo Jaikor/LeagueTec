@@ -55,23 +55,6 @@ namespace Perplexed_Gangplank
                     }
                 }
             }
-            //if (sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
-            //{
-            //    var barrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
-            //    if (barrel != null)
-            //    {
-            //        var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
-            //        var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Health).FirstOrDefault();
-            //        if (bestEnemy != null)
-            //        {
-            //            if (bestEnemy.IsInRange(SpellManager.E.Range))
-            //            {
-            //                Console.WriteLine("CAST DAT TING");
-            //                SpellManager.E.Cast(bestEnemy.ServerPosition);
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         private static void GameObject_OnCreate(GameObject sender)
@@ -86,17 +69,17 @@ namespace Perplexed_Gangplank
             RemoveCC();
             Killsteal();
 
-            //var closestHittingBarrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
-            //if (closestHittingBarrel != null)
-            //{
-            //    var chainedBarrels = BarrelManager.GetChainedBarrels(closestHittingBarrel);
-            //    var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
-            //    if (barrelToQ != null && SpellManager.Q.Ready)
-            //    {
-            //        SpellManager.Q.Cast(barrelToQ.Object);
-            //        return;
-            //    }
-            //}
+            var closestHittingBarrel = BarrelManager.GetBarrelsThatWillHit().FirstOrDefault();
+            if (closestHittingBarrel != null)
+            {
+                var chainedBarrels = BarrelManager.GetChainedBarrels(closestHittingBarrel);
+                var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
+                if (barrelToQ != null && SpellManager.Q.Ready)
+                {
+                    SpellManager.Q.Cast(barrelToQ.Object);
+                    return;
+                }
+            }
 
             if ((Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed || Orbwalker.Implementation.Mode == OrbwalkingMode.Lasthit ||
                Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear || MenuManager.Keys["comboToMouse"].Enabled || MenuManager.Keys["qBarrel"].Enabled) && MenuManager.Misc["aaBarrel"].Enabled)
@@ -237,9 +220,31 @@ namespace Perplexed_Gangplank
         
         private static void RemoveCC()
         {
-            if((Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Flee) || Player.HasBuffOfType(BuffType.Slow) ||
-                Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Taunt) || Player.HasBuffOfType(BuffType.Suppression)) && SpellManager.W.Ready)
-                SpellManager.W.Cast();
+            if(MenuManager.W["wEnable"].Enabled && SpellManager.W.Ready)
+            {
+                if (Player.HasBuffOfType(BuffType.Blind) && MenuManager.CCTypes["blind"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Charm) && MenuManager.CCTypes["charm"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Fear) && MenuManager.CCTypes["fear"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Flee) && MenuManager.CCTypes["flee"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Polymorph) && MenuManager.CCTypes["polymorph"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Silence) && MenuManager.CCTypes["silence"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Slow) && MenuManager.CCTypes["slow"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Snare) && MenuManager.CCTypes["snare"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Stun) && MenuManager.CCTypes["stun"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Suppression) && MenuManager.CCTypes["suppression"].Enabled)
+                    SpellManager.W.Cast();
+                else if (Player.HasBuffOfType(BuffType.Taunt) && MenuManager.CCTypes["taunt"].Enabled)
+                    SpellManager.W.Cast();
+            }
         }
 
         private static void Killsteal()
@@ -289,7 +294,6 @@ namespace Perplexed_Gangplank
                     Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
                 if (MenuManager.Drawing["drawBarrelChain"].Enabled)
                     Render.Circle(barrel.ServerPosition, SpellManager.ChainRadius, 30, Color.Orange);
-                //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
             }
         }
     }

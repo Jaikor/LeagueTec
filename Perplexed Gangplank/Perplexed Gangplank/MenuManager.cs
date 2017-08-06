@@ -1,4 +1,6 @@
 ﻿using System;
+using Aimtec;
+using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Menu;
 using Aimtec.SDK.Menu.Components;
 using Aimtec.SDK.Orbwalking;
@@ -11,6 +13,7 @@ namespace Perplexed_Gangplank
         public static Menu Root;
         public static Menu Keys;
         public static Menu Combo;
+        public static Menu W, CCTypes;
         public static Menu Harass;
         public static Menu LastHit;
         public static Menu Killsteal;
@@ -42,6 +45,29 @@ namespace Perplexed_Gangplank
                     //new MenuBool("qCantCombo", "Q enemy if can't barrel combo whatsoever")
                 };
                 Root.Add(Combo);
+            }
+            //W Settings
+            {
+                W = new Menu("wSettings", "W Settings")
+                {
+                    new MenuBool("wEnable","Enabled")
+                };
+                CCTypes = new Menu("ccTypes", "Crowd Control")
+                {
+                    new MenuBool("blind", "Blind"),
+                    new MenuBool("charm", "Charm"),
+                    new MenuBool("fear", "Fear"),
+                    new MenuBool("flee", "Flee"),
+                    new MenuBool("polymorph", "Polymorph"),
+                    new MenuBool("silence", "Silence"),
+                    new MenuBool("slow", "Slow"),
+                    new MenuBool("snare", "Snare"),
+                    new MenuBool("stun", "Stun"),
+                    new MenuBool("suppression", "Suppression"),
+                    new MenuBool("taunt", "Taunt"),
+                };
+                W.Add(CCTypes);
+                Root.Add(W);
             }
             //Harass
             {
@@ -75,8 +101,7 @@ namespace Perplexed_Gangplank
             {
                 Misc = new Menu("misc", "Misc")
                 {
-                    new MenuBool("aaBarrel", "Auto attack barrels to decay health"),
-                    new MenuBool("removeCC", "Automatically W to remove CC")
+                    new MenuBool("aaBarrel", "Auto attack barrels to decay health")
                 };
                 Root.Add(Misc);
             }

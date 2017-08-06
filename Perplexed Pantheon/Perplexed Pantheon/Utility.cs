@@ -20,7 +20,7 @@ namespace Perplexed_Pantheon
         public static double GetQDamage(Obj_AI_Hero target)
         {
             var damage = Player.GetSpellDamage(target, SpellSlot.Q);
-            if (IsVulnerable(target) && Player.SpellBook.GetSpellState(SpellSlot.E) != SpellState.NotLearned)
+            if (IsVulnerable(target))
                 damage *= 2;
             return damage;
         }
@@ -28,7 +28,7 @@ namespace Perplexed_Pantheon
         {
             var maxHealth = target.MaxHealth;
             var vulnThreshold = maxHealth * 0.15;
-            return target.Health < vulnThreshold;
+            return target.Health < vulnThreshold && Player.SpellBook.GetSpellState(SpellSlot.E) != SpellState.NotLearned;
         }
         public static List<Obj_AI_Hero> GetVulnerableHeroes()
         {

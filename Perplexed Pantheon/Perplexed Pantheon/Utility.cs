@@ -20,7 +20,7 @@ namespace Perplexed_Pantheon
         public static double GetQDamage(Obj_AI_Hero target)
         {
             var damage = Player.GetSpellDamage(target, SpellSlot.Q);
-            if (IsVulnerable(target))
+            if (IsVulnerable(target) && Player.SpellBook.GetSpellState(SpellSlot.E) != SpellState.NotLearned)
                 damage *= 2;
             return damage;
         }

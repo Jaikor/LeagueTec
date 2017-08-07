@@ -35,7 +35,44 @@ namespace Perplexed_Gangplank
             GameObject.OnCreate += GameObject_OnCreate;
             Obj_AI_Base.OnProcessSpellCast += ObjAiBaseOnOnProcessSpellCast;
             Game.OnUpdate += Game_OnUpdate;
+            Dash.HeroDashed += DashOnHeroDashed;
             Render.OnPresent += Render_OnPresent;
+            BuffManager.OnAddBuff += (sender, buff) => Console.WriteLine(buff.Name);
+        }
+
+        private static void DashOnHeroDashed(object sender, Dash.DashArgs dashArgs)
+        {
+            if(dashArgs.Unit is Obj_AI_Hero)
+            {
+                var nearestBarrel = BarrelManager.GetNearestBarrel(dashArgs.EndPos.To3D());
+                if(nearestBarrel != null)
+                {
+                    var chainedBarrels = BarrelManager.GetChainedBarrels(nearestBarrel);
+                    if (chainedBarrels.Any(x => BarrelManager.BarrelWillHit(x, dashArgs.EndPos.To3D())))
+                    {
+                        //If any of the chained barrels will hit, cast Q on best barrel.
+                        var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
+                        if (barrelToQ != null)
+                        {
+                            if (SpellManager.Q.Ready)
+                                SpellManager.Q.Cast(barrelToQ.Object);
+                            else if (barrelToQ.Object.Distance(Player) <= Player.AttackRange && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                                Orbwalker.Implementation.Attack(barrelToQ.Object);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        //No chained barrels will hit, so let's chain them.
+                        var bestChainPosition = BarrelManager.GetBestChainPosition(dashArgs.EndPos.To3D(), nearestBarrel);
+                        if (bestChainPosition != Vector3.Zero && dashArgs.EndPos.Distance(Player) <= SpellManager.E.Range && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && nearestBarrel.CanChain)
+                        {
+                            Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestChainPosition.ToScreenPosition(), 5, true, Color.Red);
+                            SpellManager.E.Cast(bestChainPosition);
+                        }
+                    }
+                }
+            }
         }
 
         private static void ObjAiBaseOnOnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)

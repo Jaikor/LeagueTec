@@ -180,7 +180,7 @@ namespace Perplexed_Viktor
                 var endPos = Player.ServerPosition.Extend(target.ServerPosition, SpellManager.E.Range);
                 var predInput = SpellManager.E.GetPredictionInput(target);
                 predInput.From = endPos;
-                var pred = Prediction.GetPrediction(predInput);
+                var pred = Prediction.Instance.GetPrediction(predInput);
                 var startPos = pred.UnitPosition;
                 return new BestCastPosition
                 {

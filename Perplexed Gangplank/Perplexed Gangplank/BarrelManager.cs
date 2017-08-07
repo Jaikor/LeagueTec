@@ -14,6 +14,10 @@ namespace Perplexed_Gangplank
         {
             return barrel.Object.Distance(target) <= SpellManager.ExplosionRadius;
         }
+        public static bool BarrelWillHit(Barrel barrel, Vector3 position)
+        {
+            return barrel.Object.Distance(position) <= SpellManager.ExplosionRadius;
+        }
         public static List<Obj_AI_Hero> GetEnemiesInChainRadius(Barrel barrel)
         {
             //Returns enemies within the barrel's chain radius, but outside of its explosion radius.
@@ -58,6 +62,16 @@ namespace Perplexed_Gangplank
             }
             return Vector3.Zero;
         }
-
+        public static Vector3 GetBestChainPosition(Vector3 position, Barrel barrel)
+        {
+            if (barrel.Object.Distance(position) <= SpellManager.ChainRadius)
+                return position;
+            if (barrel.Object.Distance(position) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
+            {
+                var bestCastPos = barrel.ServerPosition.Extend(position, SpellManager.ChainRadius - 5);
+                return bestCastPos;
+            }
+            return Vector3.Zero;
+        }
     }
 }

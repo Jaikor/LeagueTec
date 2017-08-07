@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C47D414E-22A2-412E-806F-2AC5CAB6B7D3}</ProjectGuid>
+    <ProjectGuid>{B86F3548-0938-4AFD-BE8F-5BC4392CC9D0}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Perplexed_Viktor</RootNamespace>
-    <AssemblyName>Perplexed Viktor</AssemblyName>
+    <RootNamespace>Perplexed_Camille</RootNamespace>
+    <AssemblyName>Perplexed Camille</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,12 +52,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aimtec, Version=1.0.6420.25134, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Aimtec">
       <HintPath>C:\Users\Ryan\AppData\Local\AimtecLoader\Data\System\Aimtec.dll</HintPath>
     </Reference>
-    <Reference Include="Aimtec.SDK, Version=1.0.0.17, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Aimtec.SDK">
       <HintPath>C:\Users\Ryan\AppData\Local\AimtecLoader\Data\System\Aimtec.SDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -71,12 +69,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BestCastPosition.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MenuManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpellManager.cs" />
+    <Compile Include="WallManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

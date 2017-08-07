@@ -16,6 +16,7 @@ namespace Perplexed_Camille
         public static Menu Combo, ComboQ;
         public static Menu Harass, HarassQ;
         public static Menu Flee;
+        public static Menu Drawing;
         public static void Initialize()
         {
             //Root
@@ -56,6 +57,14 @@ namespace Perplexed_Camille
                     new MenuKeyBind("fleeKey", "Flee", KeyCode.A, KeybindType.Press)
                 };
                 Root.Add(Flee);
+            }
+            //Drawing
+            {
+                Drawing = new Menu("drawing", "Drawing")
+                {
+                    new MenuBool("drawW", "Draw W Range"),
+                    new MenuBool("drawE", "Draw E Range")
+                };
             }
             //Finally
             {

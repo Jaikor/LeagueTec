@@ -44,8 +44,8 @@ namespace Perplexed_Camille
             Render.OnPresent += RenderOnOnPresent;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Orbwalker.Implementation.PostAttack += ImplementationOnPostAttack;
-            BuffManager.OnAddBuff += (sender, buff) => Console.WriteLine($"Got {buff.Name}");
-            BuffManager.OnRemoveBuff += (sender, buff) => Console.WriteLine($"Lost {buff.Name}");
+            //BuffManager.OnAddBuff += (sender, buff) => Console.WriteLine($"Got {buff.Name}");
+            //BuffManager.OnRemoveBuff += (sender, buff) => Console.WriteLine($"Lost {buff.Name}");
         }
 
         private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
@@ -72,6 +72,10 @@ namespace Perplexed_Camille
 
         private static void RenderOnOnPresent()
         {
+            if(MenuManager.Drawing["drawW"].Enabled)
+                Render.Circle(Player.ServerPosition, SpellManager.W.Range, 30, Color.White);
+            if(MenuManager.Drawing["drawE"].Enabled)
+                Render.Circle(Player.ServerPosition, SpellManager.E.Range, 30, Color.BlueViolet);
         }
 
         private static void Game_OnUpdate()

@@ -13,7 +13,7 @@ namespace Perplexed_Camille
     public static class MenuManager
     {
         public static Menu Root;
-        public static Menu Combo, ComboQ;
+        public static Menu Combo, ComboQ, ComboR;
         public static Menu Harass, HarassQ;
         public static Menu Flee;
         public static Menu Drawing;
@@ -35,6 +35,12 @@ namespace Perplexed_Camille
                 Combo.Add(ComboQ);
                 Combo.Add(new MenuBool("comboW", "Use W", false));
                 Combo.Add(new MenuBool("comboE", "Use E"));
+                ComboR = new Menu("comboR", "R Settings")
+                {
+                    new MenuBool("on", "Enabled"),
+                    new MenuSlider("targetHealthPct", "Target health % <=", 30, 10, 80)
+                };
+                Combo.Add(ComboR);
                 Root.Add(Combo);
             }
             //Harass

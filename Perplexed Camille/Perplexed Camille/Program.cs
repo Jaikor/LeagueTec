@@ -118,7 +118,15 @@ namespace Perplexed_Camille
                 return;
             }
             if (SpellManager.W.Ready && target.Distance(Player) <= SpellManager.W.Range && !ChargingQ && !QCharged && ShouldW && MenuManager.Combo["comboW"].Enabled)
+            {
                 SpellManager.W.Cast(target.ServerPosition);
+                return;
+            }
+            if(SpellManager.R.Ready && target.Distance(Player) <= SpellManager.R.Range && !ChargingQ && !QCharged && MenuManager.ComboR["on"].Enabled)
+            {
+                if (target.HealthPercent() <= MenuManager.ComboR["targetHealthPct"].Value)
+                    SpellManager.R.Cast(target);
+            }
         }
 
         private static void Harass()

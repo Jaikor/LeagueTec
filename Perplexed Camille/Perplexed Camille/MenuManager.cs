@@ -13,8 +13,8 @@ namespace Perplexed_Camille
     public static class MenuManager
     {
         public static Menu Root;
-        public static Menu Combo, ComboQ, ComboR;
-        public static Menu Harass, HarassQ;
+        public static Menu Combo, ComboQ, ComboW, ComboR;
+        public static Menu Harass, HarassQ, HarassW;
         public static Menu Flee;
         public static Menu Drawing;
         public static void Initialize()
@@ -33,7 +33,12 @@ namespace Perplexed_Camille
                     new MenuBool("onlyReset", "Only to reset Auto Attack")
                 };
                 Combo.Add(ComboQ);
-                Combo.Add(new MenuBool("comboW", "Use W", false));
+                ComboW = new Menu("comboW", "W Settings")
+                {
+                    new MenuBool("on", "Enabled"),
+                    new MenuBool("magnet", "Stick to target")
+                };
+                Combo.Add(ComboW);
                 Combo.Add(new MenuBool("comboE", "Use E"));
                 ComboR = new Menu("comboR", "R Settings")
                 {
@@ -52,7 +57,12 @@ namespace Perplexed_Camille
                     new MenuBool("onlyReset", "Only to reset Auto Attack")
                 };
                 Harass.Add(HarassQ);
-                Harass.Add(new MenuBool("harassW", "Use W"));
+                HarassW = new Menu("harassW", "W Settings")
+                {
+                    new MenuBool("on", "Enabled"),
+                    new MenuBool("magnet", "Stick to target")
+                };
+                Harass.Add(HarassW);
                 Harass.Add(new MenuSlider("harassManaPct", "Mana % >=", 30, 1, 99));
                 Root.Add(Harass);
             }

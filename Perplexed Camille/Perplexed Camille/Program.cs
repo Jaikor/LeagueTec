@@ -25,6 +25,7 @@ namespace Perplexed_Camille
         private static bool ChargingQ => Player.HasBuff("camilleqprimingstart");
         private static bool QCharged => Player.HasBuff("camilleqprimingcomplete");
         private static bool CastingW => Player.HasBuff("camillewconeslashcharge");
+        private static Vector3 WPos;
         static void Main(string[] args)
         {
             GameEvents.GameStart += GameEventsOnGameStart;
@@ -66,8 +67,14 @@ namespace Perplexed_Camille
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
         {
-            if (sender.IsMe && e.SpellSlot == SpellSlot.E)
-                LastECast = Game.TickCount;
+            if (sender.IsMe)
+            {
+                if (e.SpellSlot == SpellSlot.E)
+                    LastECast = Game.TickCount;
+                else if (e.SpellSlot == SpellSlot.W)
+                    WPos = e.End;
+            }
+                
         }
 
         private static void RenderOnOnPresent()
@@ -80,6 +87,16 @@ namespace Perplexed_Camille
 
         private static void Game_OnUpdate()
         {
+            if(CastingW && MenuManager.ComboW["on"].Enabled && MenuManager.ComboW["magnet"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+            {
+                MagnetW();
+                return;
+            }
+            if (CastingW && MenuManager.HarassW["on"].Enabled && MenuManager.HarassW["magnet"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed)
+            {
+                MagnetW();
+                return;
+            }
             if (MenuManager.Flee["fleeKey"].Enabled)
                 Flee();
             switch (Orbwalker.Implementation.Mode)
@@ -117,7 +134,7 @@ namespace Perplexed_Camille
                 SpellManager.Q.Cast();
                 return;
             }
-            if (SpellManager.W.Ready && target.Distance(Player) <= SpellManager.W.Range && !ChargingQ && !QCharged && ShouldW && MenuManager.Combo["comboW"].Enabled)
+            if (SpellManager.W.Ready && target.Distance(Player) <= SpellManager.W.Range && !ChargingQ && !QCharged && ShouldW && MenuManager.ComboW["on"].Enabled)
             {
                 SpellManager.W.Cast(target.ServerPosition);
                 return;
@@ -140,7 +157,7 @@ namespace Perplexed_Camille
                 SpellManager.Q.Cast();
                 return;
             }
-            if (SpellManager.W.Ready && target.Distance(Player) <= SpellManager.W.Range && !ChargingQ && !QCharged && ShouldW && MenuManager.Harass["harassW"].Enabled && Player.ManaPercent() >= minManaPct)
+            if (SpellManager.W.Ready && target.Distance(Player) <= SpellManager.W.Range && !ChargingQ && !QCharged && ShouldW && MenuManager.HarassW["on"].Enabled && Player.ManaPercent() >= minManaPct)
                 SpellManager.W.Cast(target.ServerPosition);
         }
         private static void Flee()
@@ -159,6 +176,14 @@ namespace Perplexed_Camille
                 else
                     SpellManager.E.Cast(fleePos);
             }
+        }
+        private static void MagnetW()
+        {
+            var target = TargetSelector.GetTarget(SpellManager.E.Range);
+            var direction = (WPos - Player.ServerPosition).Normalized();
+            var actualEnd = Player.ServerPosition + direction * SpellManager.W.Range;
+            var movePos = target.ServerPosition.Extend(actualEnd, -490);
+            Orbwalker.Implementation.Move(movePos);
         }
     }
 }

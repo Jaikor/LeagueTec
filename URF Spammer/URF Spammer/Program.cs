@@ -31,6 +31,8 @@ namespace URF_Spammer
 
         private static void GameOnOnUpdate()
         {
+            if (Player.IsRecalling())
+                return;
             if (MenuManager.QMenu["spamQ"].Enabled && SpellManager.Q.Ready)
             {
                 var castOn = MenuManager.QMenu["castOn"].Value;

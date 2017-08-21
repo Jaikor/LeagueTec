@@ -36,10 +36,18 @@ namespace URF_Spammer
             if (MenuManager.QMenu["spamQ"].Enabled && SpellManager.Q.Ready)
             {
                 var castOn = MenuManager.QMenu["castOn"].Value;
-                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1500);
+                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1000);
                 if(castOn == 3) //Mouse
                 {
-                    SpellManager.Q.Cast(Game.CursorPos);
+                    if (MenuManager.QMenu["comboOnly"].Enabled)
+                    {
+                        if(Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.Q.Cast(Game.CursorPos);
+                    }
+                    else
+                    {
+                        SpellManager.Q.Cast(Game.CursorPos);
+                    }
                     return;
                 }
                 switch (castOn)
@@ -51,19 +59,37 @@ namespace URF_Spammer
                         target = GameObjects.AllyHeroes.OrderBy(x => x.Distance(Player)).FirstOrDefault();
                         break;
                     case 2: //Enemy
-                        target = TargetSelector.GetTarget(1500);
+                        target = TargetSelector.GetTarget(1000);
                         break;
                 }
-                if(target != null)
-                    SpellManager.Q.Cast(target);
+                if (target != null)
+                {
+                    if (MenuManager.QMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.Q.Cast(target);
+                    }
+                    else
+                    {
+                        SpellManager.Q.Cast(target);
+                    }
+                }
             }
             if (MenuManager.WMenu["spamW"].Enabled && SpellManager.W.Ready)
             {
                 var castOn = MenuManager.WMenu["castOn"].Value;
-                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1500);
+                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1000);
                 if (castOn == 3) //Mouse
                 {
-                    SpellManager.W.Cast(Game.CursorPos);
+                    if (MenuManager.WMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.W.Cast(Game.CursorPos);
+                    }
+                    else
+                    {
+                        SpellManager.W.Cast(Game.CursorPos);
+                    }
                     return;
                 }
                 switch (castOn)
@@ -75,19 +101,37 @@ namespace URF_Spammer
                         target = GameObjects.AllyHeroes.OrderBy(x => x.Distance(Player)).FirstOrDefault();
                         break;
                     case 2: //Enemy
-                        target = TargetSelector.GetTarget(1500);
+                        target = TargetSelector.GetTarget(1000);
                         break;
                 }
                 if (target != null)
-                    SpellManager.W.Cast(target);
+                {
+                    if (MenuManager.WMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.W.Cast(target);
+                    }
+                    else
+                    {
+                        SpellManager.W.Cast(target);
+                    }
+                }
             }
             if (MenuManager.EMenu["spamE"].Enabled && SpellManager.E.Ready)
             {
                 var castOn = MenuManager.EMenu["castOn"].Value;
-                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1500);
+                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1000);
                 if (castOn == 3) //Mouse
                 {
-                    SpellManager.E.Cast(Game.CursorPos);
+                    if (MenuManager.EMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.E.Cast(Game.CursorPos);
+                    }
+                    else
+                    {
+                        SpellManager.E.Cast(Game.CursorPos);
+                    }
                     return;
                 }
                 switch (castOn)
@@ -99,19 +143,37 @@ namespace URF_Spammer
                         target = GameObjects.AllyHeroes.OrderBy(x => x.Distance(Player)).FirstOrDefault();
                         break;
                     case 2: //Enemy
-                        target = TargetSelector.GetTarget(1500);
+                        target = TargetSelector.GetTarget(1000);
                         break;
                 }
                 if (target != null)
-                    SpellManager.E.Cast(target);
+                {
+                    if (MenuManager.EMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.E.Cast(target);
+                    }
+                    else
+                    {
+                        SpellManager.E.Cast(target);
+                    }
+                }
             }
             if (MenuManager.RMenu["spamR"].Enabled && SpellManager.R.Ready)
             {
                 var castOn = MenuManager.RMenu["castOn"].Value;
-                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1500);
+                var target = TargetSelector.GetSelectedTarget() ?? TargetSelector.GetTarget(1000);
                 if (castOn == 3) //Mouse
                 {
-                    SpellManager.R.Cast(Game.CursorPos);
+                    if (MenuManager.RMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.R.Cast(Game.CursorPos);
+                    }
+                    else
+                    {
+                        SpellManager.R.Cast(Game.CursorPos);
+                    }
                     return;
                 }
                 switch (castOn)
@@ -123,11 +185,21 @@ namespace URF_Spammer
                         target = GameObjects.AllyHeroes.OrderBy(x => x.Distance(Player)).FirstOrDefault();
                         break;
                     case 2: //Enemy
-                        target = TargetSelector.GetTarget(1500);
+                        target = TargetSelector.GetTarget(1000);
                         break;
                 }
                 if (target != null)
-                    SpellManager.R.Cast(target);
+                {
+                    if (MenuManager.RMenu["comboOnly"].Enabled)
+                    {
+                        if (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo)
+                            SpellManager.R.Cast(target);
+                    }
+                    else
+                    {
+                        SpellManager.R.Cast(target);
+                    }
+                }
             }
         }
     }

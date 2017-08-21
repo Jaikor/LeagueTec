@@ -21,7 +21,8 @@ namespace URF_Spammer
                 QMenu = new Menu("qMenu", "Q Settings")
                 {
                     new MenuBool("spamQ", "Spam Q", false),
-                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0)
+                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0),
+                    new MenuBool("comboOnly", "Only in Combo", false)
                 };
                 Root.Add(QMenu);
             }
@@ -30,7 +31,8 @@ namespace URF_Spammer
                 WMenu = new Menu("WMenu", "W Settings")
                 {
                     new MenuBool("spamW", "Spam W", false),
-                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0)
+                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0),
+                    new MenuBool("comboOnly", "Only in Combo", false)
                 };
                 Root.Add(WMenu);
             }
@@ -39,7 +41,8 @@ namespace URF_Spammer
                 EMenu = new Menu("EMenu", "E Settings")
                 {
                     new MenuBool("spamE", "Spam E", false),
-                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0)
+                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0),
+                    new MenuBool("comboOnly", "Only in Combo", false)
                 };
                 Root.Add(EMenu);
             }
@@ -48,7 +51,8 @@ namespace URF_Spammer
                 RMenu = new Menu("RMenu", "R Settings")
                 {
                     new MenuBool("spamR", "Spam R", false),
-                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0)
+                    new MenuList("castOn", "Cast On", new []{"Self", "Ally", "Enemy", "Mouse"}, 0),
+                    new MenuBool("comboOnly", "Only in Combo", false)
                 };
                 Root.Add(RMenu);
             }

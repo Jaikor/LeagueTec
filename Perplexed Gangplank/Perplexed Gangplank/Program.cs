@@ -400,7 +400,7 @@ namespace Perplexed_Gangplank
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {
-                Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
+                //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
                 if (MenuManager.Drawing["drawBarrelExplode"].Enabled)
                     Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
                 if (MenuManager.Drawing["drawBarrelChain"].Enabled)

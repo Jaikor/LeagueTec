@@ -37,7 +37,21 @@ namespace Perplexed_Gangplank
         }
         public static List<Barrel> GetChainedBarrels(Barrel barrel)
         {
-            return Barrels.Where(x => !x.Object.IsDead && x.Object.Distance(barrel.Object) <= SpellManager.ChainRadius).ToList();
+            var barrels = new List<Barrel>();
+            barrels.Add(barrel);
+            var currentBarrelId = barrel.NetworkId;
+            while(true)
+            {
+                var barrelToAdd = Barrels.FirstOrDefault(x => !x.Object.IsDead && x.Object.Distance(barrel.Object) <= SpellManager.ChainRadius && x.NetworkId != currentBarrelId && !barrels.Contains(x));
+                if (barrelToAdd != null)
+                {
+                    barrels.Add(barrelToAdd);
+                    currentBarrelId = barrelToAdd.NetworkId;
+                }
+                else
+                    break;
+            }
+            return barrels;
         }
         public static Barrel GetBestBarrelToQ(List<Barrel> barrels)
         {

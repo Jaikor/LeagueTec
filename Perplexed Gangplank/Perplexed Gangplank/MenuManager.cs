@@ -40,9 +40,8 @@ namespace Perplexed_Gangplank
             {
                 Combo = new Menu("combo", "Combo")
                 {
-                    //new MenuBool("dontEIfKillsteal", "Don't use barrels if target can die to Q"),
+                    new MenuBool("triple", "Use triple barrel combo wherever possible"),
                     new MenuBool("explodeQCooldown","Explode barrel with auto attack if Q is on cooldown")
-                    //new MenuBool("qCantCombo", "Q enemy if can't barrel combo whatsoever")
                 };
                 Root.Add(Combo);
             }

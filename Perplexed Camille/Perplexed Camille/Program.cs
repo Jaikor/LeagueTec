@@ -115,7 +115,7 @@ namespace Perplexed_Camille
             var target = TargetSelector.GetTarget(SpellManager.E.Range);
             if (target == null)
                 return;
-            if (SpellManager.E.Ready && !Ulting && !ChargingQ && !QCharged && MenuManager.Combo["comboE"].Enabled)
+            if (SpellManager.E.Ready && !Ulting && MenuManager.Combo["comboE"].Enabled)
             {
                 if (!OnWall)
                 {

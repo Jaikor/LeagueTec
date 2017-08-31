@@ -10,6 +10,7 @@ using System.Linq;
 using System.Drawing;
 using System.Collections.Generic;
 using System;
+using Aimtec.SDK.Util;
 using Aimtec.SDK.Util.Cache;
 
 namespace Perplexed_Gangplank
@@ -17,6 +18,7 @@ namespace Perplexed_Gangplank
     public class Program
     {
         private static Obj_AI_Hero Player;
+        private static int LastECast;
         static void Main(string[] args)
         {
             GameEvents.GameStart += GameEvents_GameStart;
@@ -31,13 +33,43 @@ namespace Perplexed_Gangplank
             MenuManager.Initialize();
             SpellManager.Initialize();
 
+            LastECast = Game.TickCount;
+
             BarrelManager.Barrels = new List<Barrel>();
             GameObject.OnCreate += GameObject_OnCreate;
             Obj_AI_Base.OnProcessSpellCast += ObjAiBaseOnOnProcessSpellCast;
+            Obj_AI_Base.OnProcessAutoAttack += ObjAiBaseOnOnProcessAutoAttack;
+            Orbwalker.Implementation.PostAttack += ImplementationOnPostAttack;
             Game.OnUpdate += Game_OnUpdate;
             Dash.HeroDashed += DashOnHeroDashed;
             Render.OnPresent += Render_OnPresent;
             BuffManager.OnAddBuff += (sender, buff) => Console.WriteLine(buff.Name);
+        }
+
+        private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
+        {
+            if (e.Target.Name == "Barrel")
+            {
+                var barrel = (Barrel)e.Target;
+                barrel?.Decay();
+            }
+        }
+
+        private static void ObjAiBaseOnOnProcessAutoAttack(Obj_AI_Base obj, Obj_AI_BaseMissileClientDataEventArgs e)
+        {
+            if (e.Sender.IsMe)
+                return;
+            if(e.Target.Name == "Barrel")
+            {
+                var barrel = (Barrel)e.Target;
+                if(barrel != null)
+                {
+                    if (e.Sender.IsMelee)
+                        barrel.Decay();
+                    else
+                        barrel.Decay((int)(e.Start.Distance(e.End) / e.SpellData.MissileSpeed));
+                }
+            }
         }
 
         private static void DashOnHeroDashed(object sender, Dash.DashArgs dashArgs)
@@ -77,9 +109,10 @@ namespace Perplexed_Gangplank
 
         private static void ObjAiBaseOnOnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
         {
-            if(sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
+            if (sender.IsMe && e.SpellSlot == SpellSlot.Q && e.Target.Name == "Barrel")
             {
                 var barrel = (Barrel)e.Target;
+                //1 part
                 if (barrel.Object.Distance(Player) >= 530 && barrel.Object.Distance(Player) <= 660 && BarrelManager.GetChainedBarrels(barrel).Count == 1) //1 part combo only works at max range.
                 {
                     var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
@@ -91,7 +124,38 @@ namespace Perplexed_Gangplank
                             SpellManager.E.Cast(bestChainPosition);
                     }
                 }
+                else if(MenuManager.Combo["triple"].Enabled)
+                {
+                    //Triple barrel
+                    var chainedBarrels = BarrelManager.GetChainedBarrels(barrel);
+                    if (chainedBarrels.Count > 1)
+                    {
+                        var barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x).Count > 0 && x.NetworkId != barrel.NetworkId);
+                        var bestBarrel = barrelsCanChain.OrderBy(x => x.Object.Distance(Player)).FirstOrDefault();
+                        var enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel);
+                        if (enemiesCanChainTo.Count > 0)
+                        {
+                            var bestEnemy = enemiesCanChainTo.OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                            if (bestEnemy != null)
+                            {
+                                var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, bestBarrel);
+                                if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
+                                {
+                                    var eDelay = LastECast + 500 - Game.TickCount;
+                                    var castDelay = eDelay <= 0 ? 250 : eDelay;
+                                    DelayAction.Queue(250, () =>
+                                    {
+                                        if (SpellManager.E.Ready)
+                                            SpellManager.E.Cast(bestChainPosition);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            else if (sender.IsMe && e.SpellSlot == SpellSlot.E)
+                LastECast = Game.TickCount;
         }
 
         private static void GameObject_OnCreate(GameObject sender)
@@ -113,7 +177,11 @@ namespace Perplexed_Gangplank
                 var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
                 if (barrelToQ != null && SpellManager.Q.Ready)
                 {
-                    SpellManager.Q.Cast(barrelToQ.Object);
+                    var timeWhenCanE = LastECast + 500;
+                    var delay = timeWhenCanE - Game.TickCount;
+                    delay = delay <= 0 ? 0 : delay;
+                    var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
+                    DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
                     return;
                 }
             }
@@ -166,7 +234,13 @@ namespace Perplexed_Gangplank
                         if (barrelToQ != null)
                         {
                             if (SpellManager.Q.Ready)
-                                SpellManager.Q.Cast(barrelToQ.Object);
+                            {
+                                var timeWhenCanE = LastECast + 500;
+                                var delay = timeWhenCanE - Game.TickCount;
+                                delay = delay <= 0 ? 0 : delay;
+                                var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
+                                DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
+                            }
                             else if (barrelToQ.Object.Distance(Player) <= Player.AttackRange && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
                                 Orbwalker.Implementation.Attack(barrelToQ.Object);
                             return;
@@ -326,7 +400,7 @@ namespace Perplexed_Gangplank
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {
-                //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
+                Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
                 if (MenuManager.Drawing["drawBarrelExplode"].Enabled)
                     Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
                 if (MenuManager.Drawing["drawBarrelChain"].Enabled)

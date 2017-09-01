@@ -132,23 +132,15 @@ namespace Perplexed_Gangplank
                     var chainedBarrels = BarrelManager.GetChainedBarrels(barrel);
                     if (chainedBarrels.Count > 1)
                     {
-                        Console.WriteLine("A");
                         var barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x).Count > 0 && x.NetworkId != barrel.NetworkId).ToList();
                         if (barrelsCanChain.Count == 0)
-                        {
                             barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x, false).Count > 0 && x.NetworkId != barrel.NetworkId).ToList();
-                            Console.WriteLine("A2");
-                        }
                         var bestBarrel = barrelsCanChain.OrderBy(x => x.Object.Distance(Player)).FirstOrDefault();
                         var enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel);
                         if (enemiesCanChainTo.Count == 0)
-                        {
-                            Console.WriteLine("A3");
                             enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel, false);
-                        }
                         if (enemiesCanChainTo.Count > 0)
                         {
-                            Console.WriteLine("B");
                             var bestEnemy = enemiesCanChainTo.OrderByDescending(x => x.Distance(Player)).FirstOrDefault();
                             if (bestEnemy != null)
                             {

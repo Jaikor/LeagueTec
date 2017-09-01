@@ -18,10 +18,6 @@ namespace Perplexed_Gangplank
         {
             return barrel.Object.Distance(position) <= SpellManager.ExplosionRadius;
         }
-        public static List<Obj_AI_Hero> GetEnemiesInExplosionRadius(Barrel barrel)
-        {
-            return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ExplosionRadius).ToList();
-        }
         public static List<Obj_AI_Hero> GetEnemiesInChainRadius(Barrel barrel, bool outsideExplosionRadius = true)
         {
             if (outsideExplosionRadius)

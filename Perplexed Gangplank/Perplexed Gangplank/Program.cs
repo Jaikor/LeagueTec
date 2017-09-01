@@ -48,6 +48,8 @@ namespace Perplexed_Gangplank
 
         private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
         {
+            if (e.Target == null || !e.Target.IsValid)
+                return;
             if (e.Target.Name == "Barrel")
             {
                 var barrel = (Barrel)e.Target;
@@ -130,19 +132,29 @@ namespace Perplexed_Gangplank
                     var chainedBarrels = BarrelManager.GetChainedBarrels(barrel);
                     if (chainedBarrels.Count > 1)
                     {
-                        var barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x).Count > 0 && x.NetworkId != barrel.NetworkId);
+                        Console.WriteLine("A");
+                        var barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x).Count > 0 && x.NetworkId != barrel.NetworkId).ToList();
+                        if (barrelsCanChain.Count == 0)
+                        {
+                            barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x, false).Count > 0 && x.NetworkId != barrel.NetworkId).ToList();
+                            Console.WriteLine("A2");
+                        }
                         var bestBarrel = barrelsCanChain.OrderBy(x => x.Object.Distance(Player)).FirstOrDefault();
                         var enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel);
+                        if (enemiesCanChainTo.Count == 0)
+                        {
+                            Console.WriteLine("A3");
+                            enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel, false);
+                        }
                         if (enemiesCanChainTo.Count > 0)
                         {
-                            var bestEnemy = enemiesCanChainTo.OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                            Console.WriteLine("B");
+                            var bestEnemy = enemiesCanChainTo.OrderByDescending(x => x.Distance(Player)).FirstOrDefault();
                             if (bestEnemy != null)
                             {
                                 var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, bestBarrel);
                                 if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
                                 {
-                                    var eDelay = LastECast + 500 - Game.TickCount;
-                                    var castDelay = eDelay <= 0 ? 250 : eDelay;
                                     DelayAction.Queue(250, () =>
                                     {
                                         if (SpellManager.E.Ready)
@@ -400,7 +412,7 @@ namespace Perplexed_Gangplank
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {
-                //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
+                Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
                 if (MenuManager.Drawing["drawBarrelExplode"].Enabled)
                     Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
                 if (MenuManager.Drawing["drawBarrelChain"].Enabled)

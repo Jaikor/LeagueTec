@@ -2,6 +2,7 @@
 using Aimtec.SDK.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using Aimtec.SDK.Prediction.Skillshots;
 using Aimtec.SDK.Util.Cache;
 
 namespace Perplexed_Gangplank
@@ -66,13 +67,23 @@ namespace Perplexed_Gangplank
         {
             return Barrels.Where(x => !x.Object.IsDead && x.Object.Distance(Player) <= SpellManager.E.Range).OrderBy(x => x.Object.Distance(position)).FirstOrDefault();
         }
-        public static Vector3 GetBestChainPosition(Obj_AI_Base target, Barrel barrel)
+        public static Vector3 GetBestChainPosition(Obj_AI_Base target, Barrel barrel, bool usePred = true)
         {
             if (barrel.Object.Distance(target) <= SpellManager.ChainRadius)
+            {
+                if (usePred)
+                {
+                    var pred = SpellManager.E.GetPrediction(target);
+                    if(pred.HitChance >= HitChance.High)
+                        return pred.UnitPosition;
+                }
                     return target.ServerPosition;
+            }
+                    
             if (barrel.Object.Distance(target) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
             {
-                var bestCastPos = barrel.ServerPosition.Extend(target.ServerPosition, SpellManager.ChainRadius - 5);
+                var pred = SpellManager.E.GetPrediction(target);
+                var bestCastPos = barrel.ServerPosition.Extend(usePred && pred.HitChance >= HitChance.High ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
                 return bestCastPos;
             }
             return Vector3.Zero;

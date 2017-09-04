@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System;
 using Aimtec.SDK.Damage;
+using Aimtec.SDK.Prediction.Skillshots;
 using Aimtec.SDK.Util;
 using Aimtec.SDK.Util.Cache;
 
@@ -129,7 +130,7 @@ namespace Perplexed_Ornn
             if (!SpellManager.Q.Ready)
                 return;
             var qDamage = SpellManager.GetQDamage();
-            var killable = GameObjects.EnemyHeroes.Where(x => x.Health < Player.CalculateDamage(x, DamageType.Physical, qDamage) && x.Distance(Player) <= SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
+            var killable = GameObjects.EnemyHeroes.Where(x => !x.IsDead && x.Health < Player.CalculateDamage(x, DamageType.Physical, qDamage) && x.Distance(Player) <= SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
             if (killable == null)
                 return;
             SpellManager.Q.Cast(killable.ServerPosition);

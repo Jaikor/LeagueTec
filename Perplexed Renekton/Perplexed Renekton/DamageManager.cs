@@ -26,7 +26,7 @@ namespace Perplexed_Renekton
                 dmg += source.GetWDamage(target);
             if (SpellManager.E.Ready && MenuManager.Combo["e"].Enabled)
                 dmg += source.GetEDamage(target);
-            if (SpellManager.E.Ready && MenuManager.Combo["r"].Enabled)
+            if (SpellManager.R.Ready && MenuManager.Combo["r"].Enabled)
             {
                 var rLevel = source.SpellBook.GetSpell(SpellSlot.R).Level;
                 var estimatedRDamage = (20 * rLevel + source.TotalAbilityDamage * 0.1) * 6;

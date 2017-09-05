@@ -119,12 +119,14 @@ namespace Perplexed_Renekton
                 Render.Circle(Player.ServerPosition, SpellManager.W.Range, 50, Color.Gold);
             if (MenuManager.Drawing["e"].Enabled)
                 Render.Circle(Player.ServerPosition, SpellManager.E.Range, 50, Color.White);
+            if (MenuManager.Drawing["extendedE"].Enabled)
+                Render.Circle(Player.ServerPosition, SpellManager.ExtendedE.Range, 50, Color.White);
 
         }
 
         private static void Combo()
         {
-            var target = TargetSelector.GetTarget(SpellManager.E.Range);
+            var target = TargetSelector.GetTarget(SpellManager.ExtendedE.Range);
             if (target == null)
                 return;
             if (HasWBuff)
@@ -135,12 +137,23 @@ namespace Perplexed_Renekton
                 Orbwalker.Implementation.Attack(target);
                 return;
             }
-            if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready && !EIsEmpowered)
+            if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready)
             {
                 if (target.Distance(Player) <= SpellManager.E.Range)
                 {
-                    SpellManager.E.Cast(target.ServerPosition);
+                    if(!EIsEmpowered)
+                        SpellManager.E.Cast(target.ServerPosition);
                     return;
+                }
+                if(MenuManager.Combo["extendedE"].Enabled && target.Distance(Player) <= SpellManager.ExtendedE.Range)
+                {
+                    var enemyTargets = GameObjects.EnemyHeroes.Cast<Obj_AI_Base>().ToList();
+                    enemyTargets.AddRange(GameObjects.EnemyMinions.Cast<Obj_AI_Base>().ToList());
+                    var targetToEFirst = enemyTargets.FirstOrDefault(x => x.Distance(Player) <= SpellManager.E.Range && x.Distance(target) <= SpellManager.E.Range);
+                    if (targetToEFirst == null)
+                        return;
+                    SpellManager.E.Cast(targetToEFirst.ServerPosition);
+                    DelayAction.Queue(500, () => SpellManager.E.Cast(target));
                 }
             }
             if (MenuManager.Combo["r"].Enabled && SpellManager.R.Ready && !SpellManager.W.Ready && target.Health < Player.GetComboDamage(target))

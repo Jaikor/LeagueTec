@@ -29,6 +29,7 @@ namespace Perplexed_Renekton
                     new MenuBool("q", "Use Q"),
                     new MenuBool("w", "Use W"),
                     new MenuBool("e", "Use E"),
+                    new MenuBool("extendedE", "Use Extended E"),
                     new MenuBool("r", "Use R"),
                     new MenuList("rMode", "R Mode", new [] {"Always", "Killable"}, 1)
                 };
@@ -83,7 +84,8 @@ namespace Perplexed_Renekton
                 {
                     new MenuBool("q", "Draw Q Range"),
                     new MenuBool("w", "Draw W Range"),
-                    new MenuBool("e", "Draw E Range")
+                    new MenuBool("e", "Draw E Range"),
+                    new MenuBool("extendedE", "Draw Extended E Range")
                 };
                 Root.Add(Drawing);
             }

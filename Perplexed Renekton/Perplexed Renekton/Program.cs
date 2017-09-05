@@ -45,7 +45,7 @@ namespace Perplexed_Renekton
             {
                 if (!SpellManager.W.Ready && !HasWBuff && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed))
                     UseItems();
-                else if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed))
+                else if (MenuManager.Combo["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || MenuManager.Harass["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed)
                 {
                     if (e.Target.Distance(Player) <= SpellManager.W.Range)
                         SpellManager.W.Cast();
@@ -141,11 +141,13 @@ namespace Perplexed_Renekton
             {
                 if (target.Distance(Player) <= SpellManager.E.Range)
                 {
-                    if(!EIsEmpowered)
+                    if (!EIsEmpowered)
+                    {
                         SpellManager.E.Cast(target.ServerPosition);
-                    return;
+                        return;
+                    }
                 }
-                if(MenuManager.Combo["extendedE"].Enabled && target.Distance(Player) <= SpellManager.ExtendedE.Range)
+                else if(MenuManager.Combo["extendedE"].Enabled && target.Distance(Player) <= SpellManager.ExtendedE.Range)
                 {
                     var enemyTargets = GameObjects.EnemyHeroes.Cast<Obj_AI_Base>().ToList();
                     enemyTargets.AddRange(GameObjects.EnemyMinions.Cast<Obj_AI_Base>().ToList());
@@ -171,7 +173,7 @@ namespace Perplexed_Renekton
                     return;
                 }
             }
-            if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready && EIsEmpowered && !SpellManager.Q.Ready && !SpellManager.W.Ready)
+            if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready && EIsEmpowered)
             {
                 if (MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready)
                     return;

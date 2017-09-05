@@ -170,7 +170,7 @@ namespace Perplexed_Renekton
                     DelayAction.Queue(500, () => SpellManager.E.Cast(target));
                 }
             }
-            if (MenuManager.Combo["r"].Enabled && SpellManager.R.Ready && !SpellManager.W.Ready && target.Health < Player.GetComboDamage(target))
+            if (MenuManager.Combo["r"].Enabled && SpellManager.R.Ready && !SpellManager.W.Ready && target.Health < Player.GetComboDamage(target) && target.Distance(Player) <= SpellManager.W.Range)
             {
                 SpellManager.R.Cast();
                 DelayAction.Queue(250, UseItems);

@@ -37,10 +37,20 @@ namespace Perplexed_Renekton
             BuffManager.OnRemoveBuff += BuffManagerOnOnRemoveBuff;
             Game.OnUpdate += GameOnOnUpdate;
             Render.OnPresent += RenderOnOnPresent;
+            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
+        }
+
+        private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
+        {
+            if (sender.IsMe)
+            {
+                Console.WriteLine($"Casted {e.SpellSlot}");
+            }
         }
 
         private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
         {
+            Console.WriteLine("Auto'd");
             if (e.Target is Obj_AI_Hero)
             {
                 if (!SpellManager.W.Ready && !HasWBuff && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed))
@@ -131,7 +141,9 @@ namespace Perplexed_Renekton
                 return;
             if (HasWBuff)
                 return;
-            if ((MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready || MenuManager.Combo["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= Player.AttackRange && Orbwalker.Implementation.CanAttack())
+            if (Orbwalker.Implementation.IsWindingUp)
+                return;
+            if ((MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready || MenuManager.Combo["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= SpellManager.W.Range && Orbwalker.Implementation.CanAttack())
             {
                 //If we can weave auto attacks.
                 Orbwalker.Implementation.Attack(target);
@@ -191,7 +203,9 @@ namespace Perplexed_Renekton
                 return;
             if (HasWBuff)
                 return;
-            if ((MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready || MenuManager.Harass["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= Player.AttackRange && Orbwalker.Implementation.CanAttack())
+            if (Orbwalker.Implementation.IsWindingUp)
+                return;
+            if ((MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready || MenuManager.Harass["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= SpellManager.W.Range && Orbwalker.Implementation.CanAttack())
             {
                 //If we can weave auto attacks.
                 Orbwalker.Implementation.Attack(target);

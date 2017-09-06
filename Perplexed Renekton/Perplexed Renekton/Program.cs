@@ -37,24 +37,15 @@ namespace Perplexed_Renekton
             BuffManager.OnRemoveBuff += BuffManagerOnOnRemoveBuff;
             Game.OnUpdate += GameOnOnUpdate;
             Render.OnPresent += RenderOnOnPresent;
-            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
-        }
-
-        private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
-        {
-            if (sender.IsMe)
-            {
-                Console.WriteLine($"Casted {e.SpellSlot}");
-            }
         }
 
         private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
         {
-            Console.WriteLine("Auto'd");
             if (e.Target is Obj_AI_Hero)
             {
                 if (!SpellManager.W.Ready && !HasWBuff && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed))
                     UseItems();
+
                 else if (MenuManager.Combo["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || MenuManager.Harass["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed)
                 {
                     if (e.Target.Distance(Player) <= SpellManager.W.Range)
@@ -95,12 +86,14 @@ namespace Perplexed_Renekton
         {
             if (target.IsMe && buff.Name == "RenektonPreExecute" && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed || Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear))
             {
-                UseItems();
-                DelayAction.Queue(250, () =>
+                if (SpellManager.R.Ready && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo && MenuManager.Combo["r"].Enabled && MenuManager.Combo["rMode"].Value == 0)
                 {
-                    if (SpellManager.R.Ready && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo && MenuManager.Combo["rMode"].Value == 0) //Only cast R after W if R mode is always
-                        SpellManager.R.Cast();
-                });
+                    //Only cast R after W if R mode is always
+                    SpellManager.R.Cast();
+                    DelayAction.Queue(250, UseItems);
+                    return;
+                } 
+                UseItems();
             }
         }
 
@@ -236,7 +229,11 @@ namespace Perplexed_Renekton
                 if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
                     return;
                 if (target.Distance(Player) <= SpellManager.E.Range)
-                    SpellManager.E.Cast(target.ServerPosition);
+                {
+                    var nearestTurret = GameObjects.AllyTurrets.OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                    if(nearestTurret != null)
+                        SpellManager.E.Cast(nearestTurret.ServerPosition);
+                }
             }
         }
 

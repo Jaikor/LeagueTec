@@ -201,6 +201,11 @@ namespace Perplexed_Renekton
                 if (target.Distance(Player) <= SpellManager.E.Range)
                     SpellManager.E.Cast(target.ServerPosition);
             }
+            if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
+            {
+                if (target.Distance(Player) <= SpellManager.W.Range)
+                    SpellManager.W.Cast();
+            }
             if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready)
             {
                 if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)

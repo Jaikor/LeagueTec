@@ -45,7 +45,6 @@ namespace Perplexed_Renekton
             {
                 if (!SpellManager.W.Ready && !HasWBuff && (Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed))
                     UseItems();
-
                 else if (MenuManager.Combo["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || MenuManager.Harass["w"].Enabled && Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed)
                 {
                     if (e.Target.Distance(Player) <= SpellManager.W.Range)
@@ -134,23 +133,17 @@ namespace Perplexed_Renekton
                 return;
             if (HasWBuff)
                 return;
-            if (Orbwalker.Implementation.IsWindingUp)
-                return;
             if ((MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready || MenuManager.Combo["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= SpellManager.W.Range && Orbwalker.Implementation.CanAttack())
             {
                 //If we can weave auto attacks.
                 Orbwalker.Implementation.Attack(target);
-                return;
             }
             if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready)
             {
                 if (target.Distance(Player) <= SpellManager.E.Range)
                 {
                     if (!EIsEmpowered)
-                    {
                         SpellManager.E.Cast(target.ServerPosition);
-                        return;
-                    }
                 }
                 else if(MenuManager.Combo["extendedE"].Enabled && target.Distance(Player) <= SpellManager.ExtendedE.Range)
                 {
@@ -163,6 +156,11 @@ namespace Perplexed_Renekton
                     DelayAction.Queue(500, () => SpellManager.E.Cast(target));
                 }
             }
+            if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready)
+            {
+                if (target.Distance(Player) <= SpellManager.W.Range)
+                    SpellManager.W.Cast();
+            }
             if (MenuManager.Combo["r"].Enabled && SpellManager.R.Ready && !SpellManager.W.Ready && target.Health < Player.GetComboDamage(target) && target.Distance(Player) <= SpellManager.W.Range)
             {
                 SpellManager.R.Cast();
@@ -173,10 +171,7 @@ namespace Perplexed_Renekton
                 if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready)
                     return;
                 if (target.Distance(Player) <= SpellManager.Q.Range)
-                {
                     SpellManager.Q.Cast();
-                    return;
-                }
             }
             if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready && EIsEmpowered)
             {
@@ -196,31 +191,22 @@ namespace Perplexed_Renekton
                 return;
             if (HasWBuff)
                 return;
-            if (Orbwalker.Implementation.IsWindingUp)
-                return;
             if ((MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready || MenuManager.Harass["w"].Enabled && SpellManager.W.Ready) && target.Distance(Player) <= SpellManager.W.Range && Orbwalker.Implementation.CanAttack())
             {
                 //If we can weave auto attacks.
                 Orbwalker.Implementation.Attack(target);
-                return;
             }
             if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && !EIsEmpowered)
             {
                 if (target.Distance(Player) <= SpellManager.E.Range)
-                {
                     SpellManager.E.Cast(target.ServerPosition);
-                    return;
-                }
             }
             if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready)
             {
                 if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
                     return;
                 if (target.Distance(Player) <= SpellManager.Q.Range)
-                {
                     SpellManager.Q.Cast();
-                    return;
-                }
             }
             if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && EIsEmpowered && !SpellManager.Q.Ready && !SpellManager.W.Ready)
             {

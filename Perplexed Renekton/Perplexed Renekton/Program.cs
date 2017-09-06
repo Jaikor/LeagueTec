@@ -196,10 +196,13 @@ namespace Perplexed_Renekton
                 //If we can weave auto attacks.
                 Orbwalker.Implementation.Attack(target);
             }
-            if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && !EIsEmpowered)
+            if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready)
             {
                 if (target.Distance(Player) <= SpellManager.E.Range)
-                    SpellManager.E.Cast(target.ServerPosition);
+                {
+                    if (!EIsEmpowered)
+                        SpellManager.E.Cast(target.ServerPosition);
+                }
             }
             if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
             {
@@ -213,18 +216,16 @@ namespace Perplexed_Renekton
                 if (target.Distance(Player) <= SpellManager.Q.Range)
                     SpellManager.Q.Cast();
             }
-            if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && EIsEmpowered && !SpellManager.Q.Ready && !SpellManager.W.Ready)
+            if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && EIsEmpowered)
             {
                 if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready)
                     return;
                 if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
                     return;
-                if (target.Distance(Player) <= SpellManager.E.Range)
-                {
-                    var nearestTurret = GameObjects.AllyTurrets.OrderBy(x => x.Distance(Player)).FirstOrDefault();
-                    if(nearestTurret != null)
-                        SpellManager.E.Cast(nearestTurret.ServerPosition);
-                }
+                var nearestTurret = GameObjects.AllyTurrets.OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                if (nearestTurret == null)
+                    return;
+                SpellManager.E.Cast(nearestTurret.ServerPosition);
             }
         }
 

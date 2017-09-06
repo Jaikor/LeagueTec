@@ -17,7 +17,7 @@ namespace Perplexed_Ornn
         {
             return points.Select(x => GetFirstWall(target.ServerPosition, x)).Where(x => x != Vector3.Zero).ToList();
         }
-        private static Vector3 GetFirstWall(Vector3 start, Vector3 end)
+        public static Vector3 GetFirstWall(Vector3 start, Vector3 end)
         {
             var wallPos = Vector3.Zero;
             var distDividend = (start - end) / 20;

@@ -140,6 +140,8 @@ namespace Perplexed_Renekton
             }
             if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready)
             {
+                if (!MenuManager.Combo["eTurret"].Enabled && target.IsUnderEnemyTurret())
+                    return;
                 if (target.Distance(Player) <= SpellManager.E.Range)
                 {
                     if (!EIsEmpowered)
@@ -168,7 +170,7 @@ namespace Perplexed_Renekton
             }
             if (MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready)
             {
-                if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready)
+                if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready || HasWBuff)
                     return;
                 if (target.Distance(Player) <= SpellManager.Q.Range)
                     SpellManager.Q.Cast();
@@ -178,6 +180,8 @@ namespace Perplexed_Renekton
                 if (MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready)
                     return;
                 if (MenuManager.Combo["w"].Enabled && SpellManager.W.Ready)
+                    return;
+                if (!MenuManager.Combo["eTurret"].Enabled && target.IsUnderEnemyTurret())
                     return;
                 if (target.Distance(Player) <= SpellManager.E.Range)
                     SpellManager.E.Cast(target.ServerPosition);
@@ -201,7 +205,11 @@ namespace Perplexed_Renekton
                 if (target.Distance(Player) <= SpellManager.E.Range)
                 {
                     if (!EIsEmpowered)
+                    {
+                        if (!MenuManager.Harass["eTurret"].Enabled && target.IsUnderEnemyTurret())
+                            return;
                         SpellManager.E.Cast(target.ServerPosition);
+                    }
                 }
             }
             if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
@@ -211,7 +219,7 @@ namespace Perplexed_Renekton
             }
             if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready)
             {
-                if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
+                if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready || HasWBuff)
                     return;
                 if (target.Distance(Player) <= SpellManager.Q.Range)
                     SpellManager.Q.Cast();

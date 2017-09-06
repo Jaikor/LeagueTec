@@ -73,7 +73,7 @@ namespace Perplexed_Ornn
             if (MenuManager.Combo["w"].Enabled && target.Distance(Player) <= SpellManager.W.Range && SpellManager.W.Ready)
             {
                 if(!target.HasBuff("OrnnVulnerableDebuff")) //Don't W already brittled targets.
-                    SpellManager.W.Cast(target.ServerPosition);
+                    SpellManager.W.Cast(target);
                 return;
             }
             if (MenuManager.Combo["q"].Enabled && target.Distance(Player) <= SpellManager.Q.Range && SpellManager.Q.Ready)
@@ -81,10 +81,10 @@ namespace Perplexed_Ornn
                 if (MenuManager.Combo["qIfHaveE"].Enabled)
                 {
                     if (SpellManager.E.Ready && SpellManager.Q.Ready)
-                        SpellManager.Q.Cast(target.ServerPosition);
+                        SpellManager.Q.Cast(target);
                 }
                 else if (SpellManager.Q.Ready)
-                    SpellManager.Q.Cast(target.ServerPosition);
+                    SpellManager.Q.Cast(target);
                 return;
             }
             if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready)
@@ -97,6 +97,9 @@ namespace Perplexed_Ornn
                     var wallsAroundTarget = target.ServerPosition.RotateAround(SpellManager.EHitRadius, 90).GetWalls(target);
                     var bestWall = wallsAroundTarget.Where(x => x.Distance(Player) <= SpellManager.E.Range).OrderBy(x => x.Distance(target)).FirstOrDefault();
                     if (bestWall == Vector3.Zero)
+                        return;
+                    var wallBetweenUs = WallManager.GetFirstWall(Player.ServerPosition, target.ServerPosition);
+                    if (wallBetweenUs != Vector3.Zero)
                         return;
                     SpellManager.E.Cast(bestWall);
                 }
@@ -113,13 +116,13 @@ namespace Perplexed_Ornn
                 return;
             if(MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready)
             {
-                SpellManager.Q.Cast(target.ServerPosition);
+                SpellManager.Q.Cast(target);
                 return;
             }
             if (MenuManager.Harass["w"].Enabled && SpellManager.W.Ready)
             {
                 if (!target.HasBuff("OrnnVulnerableDebuff")) //Don't W already brittled targets.
-                    SpellManager.W.Cast(target.ServerPosition);
+                    SpellManager.W.Cast(target);
             }
         }
 
@@ -133,7 +136,7 @@ namespace Perplexed_Ornn
             var killable = GameObjects.EnemyHeroes.Where(x => !x.IsDead && x.Health < Player.CalculateDamage(x, DamageType.Physical, qDamage) && x.Distance(Player) <= SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
             if (killable == null)
                 return;
-            SpellManager.Q.Cast(killable.ServerPosition);
+            SpellManager.Q.Cast(killable);
         }
 
         private static void SemiUlt()
@@ -145,14 +148,14 @@ namespace Perplexed_Ornn
                     return;
                 if (!UltIsChargingIn)
                 {
-                    SpellManager.R.Cast(target.ServerPosition);
+                    SpellManager.R.Cast(target);
                     return;
                 }
                 var ornnR = GameObjects.Get<MissileClient>().FirstOrDefault(x => x.SpellData.Name == "OrnnRWave");
                 if (ornnR == null)
                     return;
                 if (ornnR.ServerPosition.Distance(Player) <= SpellManager.W.Range)
-                    SpellManager.R.Cast(target.ServerPosition);
+                    SpellManager.R.Cast(target);
             }
         }
 

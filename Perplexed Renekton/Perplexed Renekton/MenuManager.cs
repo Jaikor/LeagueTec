@@ -30,6 +30,7 @@ namespace Perplexed_Renekton
                     new MenuBool("w", "Use W"),
                     new MenuBool("e", "Use E"),
                     new MenuBool("extendedE", "Use Extended E"),
+                    new MenuBool("eTurret", "E Under Turret", false),
                     new MenuBool("r", "Use R"),
                     new MenuList("rMode", "R Mode", new [] {"Always", "Killable"}, 1)
                 };
@@ -42,6 +43,7 @@ namespace Perplexed_Renekton
                     new MenuBool("q", "Use Q"),
                     new MenuBool("w", "Use W"),
                     new MenuBool("e", "Use E"),
+                    new MenuBool("eTurret", "E Under Turret", false),
                 };
                 Root.Add(Harass);
             }

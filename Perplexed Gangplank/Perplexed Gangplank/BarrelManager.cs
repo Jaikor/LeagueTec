@@ -2,6 +2,7 @@
 using Aimtec.SDK.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using Aimtec.SDK.Prediction.Health;
 using Aimtec.SDK.Prediction.Skillshots;
 using Aimtec.SDK.Util.Cache;
 

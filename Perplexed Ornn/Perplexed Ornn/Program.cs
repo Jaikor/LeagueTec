@@ -155,7 +155,7 @@ namespace Perplexed_Ornn
                 if (ornnR == null)
                     return;
                 if (ornnR.ServerPosition.Distance(Player) <= SpellManager.W.Range)
-                    SpellManager.R.Cast(target);
+                    SpellManager.R2.Cast(target);
             }
         }
 

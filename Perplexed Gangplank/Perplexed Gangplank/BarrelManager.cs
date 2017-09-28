@@ -58,7 +58,7 @@ namespace Perplexed_Gangplank
         }
         public static Barrel GetBestBarrelToQ(List<Barrel> barrels)
         {
-            return barrels.Where(x => !x.Object.IsDead && x.CanQ && x.Object.IsInRange(SpellManager.Q.Range)).OrderBy(x => x.Object.Distance(Utility.Player)).FirstOrDefault();
+            return barrels.Where(x => !x.Object.IsDead && x.CanQ && x.Object.IsInRange(SpellManager.Q.Range)).OrderBy(x => x.Created).FirstOrDefault();
         }
         public static Barrel GetNearestBarrel()
         {
@@ -70,12 +70,16 @@ namespace Perplexed_Gangplank
         }
         public static Vector3 GetBestChainPosition(Obj_AI_Base target, Barrel barrel, bool usePred = true)
         {
+
+            var input = SpellManager.E.GetPredictionInput(target);
+            input.Delay = input.Delay * 2;
+            var aa = Prediction.Instance.GetPrediction(input);
             if (barrel.Object.Distance(target) <= SpellManager.ChainRadius)
             {
                 if (usePred)
                 {
-                    var pred = SpellManager.E.GetPrediction(target);
-                    if(pred.HitChance >= HitChance.High)
+                    var pred = aa;
+                    if(pred.HitChance >= HitChance.Medium)
                         return pred.UnitPosition;
                 }
                     return target.ServerPosition;
@@ -83,8 +87,8 @@ namespace Perplexed_Gangplank
                     
             if (barrel.Object.Distance(target) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
             {
-                var pred = SpellManager.E.GetPrediction(target);
-                var bestCastPos = barrel.ServerPosition.Extend(usePred && pred.HitChance >= HitChance.High ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
+                var pred = aa;
+                var bestCastPos = barrel.ServerPosition.Extend(usePred && pred.HitChance >= HitChance.Medium ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
                 return bestCastPos;
             }
             return Vector3.Zero;

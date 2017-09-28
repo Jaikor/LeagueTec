@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using Aimtec;
 using Aimtec.SDK.Extensions;
 using Aimtec.SDK.Menu;
@@ -11,7 +12,6 @@ namespace Perplexed_Gangplank
     public static class MenuManager
     {
         public static Menu Root;
-        public static Menu Keys;
         public static Menu Combo;
         public static Menu W, CCTypes;
         public static Menu Harass;
@@ -20,21 +20,17 @@ namespace Perplexed_Gangplank
         public static Menu Misc;
         public static Menu Drawing;
 
+        public static OrbwalkerMode ComboToMouse = new OrbwalkerMode("Combo To Mouse", KeyCode.A, () => null, null);
+        public static OrbwalkerMode ExplodeNearestBarrel = new OrbwalkerMode("Explode Nearest Barrel", KeyCode.T, () => null, null);
+
         public static void Initialize()
         {
             //Root
             {
                 Root = new Menu("Gangplank", "Perplexed Gangplank", true);
                 Orbwalker.Implementation.Attach(Root);
-            }
-            //Keys
-            {
-                Keys = new Menu("keys", "Keys")
-                {
-                    new MenuKeyBind("comboToMouse", "Combo To Mouse", KeyCode.A, KeybindType.Press),
-                    new MenuKeyBind("qBarrel", "Q nearest barrel", KeyCode.T, KeybindType.Press)
-                };
-                Root.Add(Keys);
+                Orbwalker.Implementation.AddMode(ComboToMouse);
+                Orbwalker.Implementation.AddMode(ExplodeNearestBarrel);
             }
             //Combo
             {

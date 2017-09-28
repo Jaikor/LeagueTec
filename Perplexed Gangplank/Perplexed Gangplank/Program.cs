@@ -43,7 +43,6 @@ namespace Perplexed_Gangplank
             Game.OnUpdate += Game_OnUpdate;
             Dash.HeroDashed += DashOnHeroDashed;
             Render.OnPresent += Render_OnPresent;
-            BuffManager.OnAddBuff += (sender, buff) => Console.WriteLine(buff.Name);
         }
 
         private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
@@ -53,7 +52,8 @@ namespace Perplexed_Gangplank
             if (e.Target.Name == "Barrel")
             {
                 var barrel = (Barrel)e.Target;
-                barrel?.Decay();
+                if(barrel.Health > 1)
+                    barrel.Decay(Game.Ping);
             }
         }
 
@@ -66,10 +66,11 @@ namespace Perplexed_Gangplank
                 var barrel = (Barrel)e.Target;
                 if (barrel != null)
                 {
+                    if(barrel.Health < 2)
                     if (e.Sender.IsMelee)
-                        barrel.Decay();
+                        barrel.Decay(Game.Ping);
                     else
-                        barrel.Decay((int)(e.Start.Distance(e.End) / e.SpellData.MissileSpeed));
+                        barrel.Decay((int)(e.Start.Distance(e.End) / e.SpellData.MissileSpeed) + Game.Ping);
                 }
             }
         }
@@ -91,7 +92,10 @@ namespace Perplexed_Gangplank
                             if (SpellManager.Q.Ready)
                                 SpellManager.Q.Cast(barrelToQ.Object);
                             else if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                            {
+                                Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
                                 Orbwalker.Implementation.Attack(barrelToQ.Object);
+                            }
                         }
                     }
                     else
@@ -135,6 +139,8 @@ namespace Perplexed_Gangplank
                         if (barrelsCanChain.Count == 0)
                             barrelsCanChain = chainedBarrels.Where(x => BarrelManager.GetEnemiesInChainRadius(x, false).Count > 0 && x.NetworkId != barrel.NetworkId).ToList();
                         var bestBarrel = barrelsCanChain.OrderBy(x => x.Object.Distance(Player)).FirstOrDefault();
+                        if (bestBarrel == null)
+                            return;
                         var enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel);
                         if (enemiesCanChainTo.Count == 0)
                             enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel, false);
@@ -144,7 +150,7 @@ namespace Perplexed_Gangplank
                             if (bestEnemy != null)
                             {
                                 var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, bestBarrel);
-                                if (bestChainPosition != Vector3.Zero && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
+                                if (bestChainPosition != Vector3.Zero && bestChainPosition.Distance(bestBarrel.Object) > SpellManager.ExplosionRadius && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
                                 {
                                     DelayAction.Queue(250, () =>
                                     {
@@ -190,26 +196,27 @@ namespace Perplexed_Gangplank
                         return;
                     }
                     if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                    {
+                        Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
                         Orbwalker.Implementation.Attack(barrelToQ.Object);
+                    }
                 }
             }
 
             if ((Orbwalker.Implementation.Mode == OrbwalkingMode.Combo || Orbwalker.Implementation.Mode == OrbwalkingMode.Mixed || Orbwalker.Implementation.Mode == OrbwalkingMode.Lasthit ||
-               Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear || MenuManager.Keys["comboToMouse"].Enabled || MenuManager.Keys["qBarrel"].Enabled) && MenuManager.Misc["aaBarrel"].Enabled)
+               Orbwalker.Implementation.Mode == OrbwalkingMode.Laneclear || MenuManager.ComboToMouse.Active || MenuManager.ExplodeNearestBarrel.Active) && MenuManager.Misc["aaBarrel"].Enabled)
             {
                 AttackNearestBarrel();
             }
 
-            if (MenuManager.Keys["comboToMouse"].Enabled)
+            if (MenuManager.ComboToMouse.Active)
             {
-                AttackNearestBarrel();
                 ComboToMouse();
             }
 
-            if (MenuManager.Keys["qBarrel"].Enabled)
+            if (MenuManager.ExplodeNearestBarrel.Active)
             {
-                AttackNearestBarrel();
-                QNearestBarrel();
+                ExplodeNearestBarrel();
             }
 
             switch (Orbwalker.Implementation.Mode)
@@ -248,20 +255,52 @@ namespace Perplexed_Gangplank
                                 delay = delay <= 0 ? 0 : delay;
                                 var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
                                 DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
+                                return;
                             }
-                            else if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                            if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                            {
+                                Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
                                 Orbwalker.Implementation.Attack(barrelToQ.Object);
+                            }
                         }
                     }
                     else
                     {
-                        //No chained barrels will hit, so let's chain them.
-                        var bestChainPosition = BarrelManager.GetBestChainPosition(target, nearestBarrel);
-                        if (bestChainPosition != Vector3.Zero && target.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && nearestBarrel.CanChain)
+                        //No chained barrels will hit, so let's chain them OR try and triple barrel.
+                        if (chainedBarrels.Count >= 2)
                         {
-                            Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestChainPosition.ToScreenPosition(), 5, true, Color.Red);
-                            SpellManager.E.Cast(bestChainPosition);
+                            //There are chained barrels, so let's see if any are in range to be triple comboed.
+                            var barrelToComboFrom = chainedBarrels.FirstOrDefault(x => BarrelManager.GetEnemiesInChainRadius(x).Count >= 1);
+                            if (barrelToComboFrom == null)
+                                return;
+                            var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
+                            if (barrelToQ != null)
+                            {
+                                if (SpellManager.Q.Ready)
+                                {
+                                    var timeWhenCanE = LastECast + 500;
+                                    var delay = timeWhenCanE - Game.TickCount;
+                                    delay = delay <= 0 ? 0 : delay;
+                                    var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
+                                    DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
+                                    return;
+                                }
+                                if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                                {
+                                    Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
+                                    Orbwalker.Implementation.Attack(barrelToQ.Object);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var bestChainPosition = BarrelManager.GetBestChainPosition(target, nearestBarrel);
+                            if (bestChainPosition != Vector3.Zero && target.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && nearestBarrel.CanChain)
+                            {
+                                Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestChainPosition.ToScreenPosition(), 5, true, Color.Red);
+                                SpellManager.E.Cast(bestChainPosition);
 
+                            }
                         }
                     }
                 }
@@ -270,7 +309,6 @@ namespace Perplexed_Gangplank
 
         private static void ComboToMouse()
         {
-            Orbwalker.Implementation.Move(Game.CursorPos);
             var nearestBarrelToCursor = BarrelManager.GetNearestBarrel(Game.CursorPos);
             if (nearestBarrelToCursor != null)
             {
@@ -278,8 +316,19 @@ namespace Perplexed_Gangplank
                 if (chainedBarrels.Count > 1)
                 {
                     var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
-                    if (barrelToQ != null && SpellManager.Q.Ready)
-                        SpellManager.Q.Cast(barrelToQ.Object);
+                    if (barrelToQ != null)
+                    {
+                        if (SpellManager.Q.Ready)
+                        {
+                            SpellManager.Q.Cast(barrelToQ.Object);
+                            return;
+                        }
+                        if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                        {
+                            Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
+                            Orbwalker.Implementation.Attack(barrelToQ.Object);
+                        }
+                    }
                 }
                 else
                 {
@@ -303,14 +352,24 @@ namespace Perplexed_Gangplank
             }
         }
 
-        private static void QNearestBarrel()
+        private static void ExplodeNearestBarrel()
         {
-            Orbwalker.Implementation.Move(Game.CursorPos);
             var barrel = BarrelManager.GetNearestBarrel();
             if (barrel != null)
             {
-                if (barrel.CanQ && SpellManager.Q.Ready)
-                    SpellManager.Q.Cast(barrel.Object);
+                if (barrel.CanQ)
+                {
+                    if (SpellManager.Q.Ready)
+                    {
+                        SpellManager.Q.Cast(barrel.Object);
+                        return;
+                    }
+                    if (barrel.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                    {
+                        Orbwalker.Implementation.ForceTarget(barrel.Object);
+                        Orbwalker.Implementation.Attack(barrel.Object);
+                    }
+                }
             }
         }
 
@@ -369,7 +428,7 @@ namespace Perplexed_Gangplank
         {
             if (SpellManager.Q.Ready && MenuManager.Killsteal["killstealQ"].Enabled)
             {
-                var target = Utility.GetAllEnemiesInRange(SpellManager.Q.Range).Where(x => Utility.CanKillWithQ(x)).OrderBy(x => x.Health).FirstOrDefault();
+                var target = Utility.GetAllEnemiesInRange(SpellManager.Q.Range).Where(Utility.CanKillWithQ).OrderBy(x => x.Health).FirstOrDefault();
                 if (target != null)
                 {
                     SpellManager.Q.Cast(target);
@@ -381,10 +440,7 @@ namespace Perplexed_Gangplank
                 var waves = MenuManager.Killsteal["killstealRWaves"].Value;
                 var target = Utility.GetAllEnemiesInRange(SpellManager.R.Range).Where(x => Utility.CanKillWithR(x, waves) && x.Distance(Player) > SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
                 if (target != null)
-                {
                     SpellManager.R.Cast(target.ServerPosition);
-                    return;
-                }
             }
         }
 
@@ -393,7 +449,7 @@ namespace Perplexed_Gangplank
             var nearestBarrel = BarrelManager.GetNearestBarrel();
             if (nearestBarrel != null)
             {
-                if (nearestBarrel.Object.IsInAutoAttackRange() && nearestBarrel.Health >= 2 && Orbwalker.Implementation.CanAttack())
+                if (nearestBarrel.Object.IsInAutoAttackRange() && nearestBarrel.Health >= 2 && Orbwalker.Implementation.CanAttack() && !Orbwalker.Implementation.IsWindingUp)
                     Orbwalker.Implementation.Attack(nearestBarrel.Object);
             }
         }

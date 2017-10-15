@@ -87,13 +87,16 @@ namespace Woke.Modules.SpellTracker
                     var levelRect = new Aimtec.Rectangle(championRect.Right - 15, championRect.Bottom - 15, championRect.Right, championRect.Bottom);
                     Render.Rectangle(new Vector2(levelRect.Left, levelRect.Top), 15, 15, Color.FromArgb(200, Color.Black));
                     Render.Text(champion.Champion.Level.ToString(), levelRect, RenderTextFlags.VerticalCenter | RenderTextFlags.HorizontalCenter, Color.White);
+
                     //Draw health
                     var healthRect = new Aimtec.Rectangle(championRect.Left, championRect.Top + 48, championRect.Left + 48, championRect.Top + 48 + 5);
+                    Render.Rectangle(new Vector2(healthRect.Left, healthRect.Top), 48, 5, Color.FromArgb(150, Color.Black));
                     var healthPct = champion.Champion.HealthPercent();
                     Render.Rectangle(new Vector2(healthRect.Left, healthRect.Top), 48 * (healthPct / 100), 5, Color.FromArgb(255, 35, 193, 26));
 
                     //Draw mana
                     var manaRect = new Aimtec.Rectangle(healthRect.Left, healthRect.Top + 5, healthRect.Left + 48, healthRect.Top + 5 + 5);
+                    Render.Rectangle(new Vector2(manaRect.Left, manaRect.Top), 48, 5, Color.FromArgb(150, Color.Black));
                     var manaPct = champion.Champion.ManaPercent();
                     Render.Rectangle(new Vector2(manaRect.Left, manaRect.Top), 48 * (manaPct / 100), 5, Color.FromArgb(255, 75, 155, 238));
 

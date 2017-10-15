@@ -44,8 +44,8 @@ namespace Woke.Modules.RecallTracker
         {
             if (sender is Obj_AI_Hero hero)
             {
-                //if (!hero.IsEnemy)
-                //    return;
+                if (!hero.IsEnemy)
+                    return;
                 switch (args.Name)
                 {
                     case "recall":

@@ -27,7 +27,7 @@ namespace Perplexed_Camille
         }
         public static bool InAutoRange(this Obj_AI_Base target)
         {
-            return target.Distance(Program.Player) <= Program.Player.AttackRange + 100;
+            return target.Distance(Program.Player) <= Program.Player.GetFullAttackRange(target) + 50;
         }
     }
 }

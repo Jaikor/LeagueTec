@@ -285,11 +285,11 @@ namespace Perplexed_Gangplank
                                     DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
                                     return;
                                 }
-                                if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
-                                {
-                                    Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
-                                    Orbwalker.Implementation.Attack(barrelToQ.Object);
-                                }
+                                //if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
+                                //{
+                                //    Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
+                                //    Orbwalker.Implementation.Attack(barrelToQ.Object);
+                                //}
                             }
                         }
                         else

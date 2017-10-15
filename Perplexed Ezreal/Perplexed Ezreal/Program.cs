@@ -140,7 +140,7 @@ namespace Perplexed_Ezreal
             {
                 var onlyOutOfRange = MenuManager.LastHitting_Q["lastHittingQOutOfRange"].As<MenuBool>().Enabled;
                 var minions = GameObjects.EnemyMinions.Where(x => x.IsInRange(SpellManager.Q.Range) && x.UnitSkinName.Contains("Minion") && Player.GetSpellDamage(x, SpellSlot.Q) >= x.Health && x.IsValidTarget()).OrderBy(x => x.Health);
-                var target = onlyOutOfRange ? minions.FirstOrDefault(x => !x.IsInRange(Player.AttackRange)) : minions.FirstOrDefault();
+                var target = onlyOutOfRange ? minions.FirstOrDefault(x => !x.IsInRange(Player.GetFullAttackRange(x))) : minions.FirstOrDefault();
                 if (target.IsValidTarget())
                     SpellManager.Q.Cast(target);
             }

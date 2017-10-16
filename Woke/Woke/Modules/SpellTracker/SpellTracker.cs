@@ -33,9 +33,9 @@ namespace Woke.Modules.SpellTracker
                 new Menu("miniTracker", "Mini Tracker")
                 {
                     new MenuBool("on", "Enabled"),
-                    new MenuSlider("xOffset", "X Offset", 0, 0, 1000),
+                    new MenuSlider("xOffset", "X Offset", 0, 0, 2000),
                     new MenuBool("invertX", "Invert X"),
-                    new MenuSlider("yOffset", "Y Offset", 0, 0, 1000),
+                    new MenuSlider("yOffset", "Y Offset", 0, 0, 2000),
                     new MenuBool("invertY", "Invert Y"),
                 }.SetToolTip("Displays enemy champion information above minimap."),
                 new MenuBool("self", "Track Self"),

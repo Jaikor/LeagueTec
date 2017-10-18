@@ -41,7 +41,8 @@ namespace Woke
             try
             {
                 var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png");
-                return new Bitmap(response.Content.ReadAsStreamAsync().Result);
+                var stream = await response.Content.ReadAsStreamAsync();
+                return new Bitmap(stream);
             }
             catch
             {
@@ -53,7 +54,8 @@ namespace Woke
         public static async Task<Bitmap> GetChampionBitmap(string championName)
         {
             var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png");
-            return new Bitmap(response.Content.ReadAsStreamAsync().Result);
+            var stream = await response.Content.ReadAsStreamAsync();
+            return new Bitmap(stream);
         }
 
         /*https://stackoverflow.com/questions/5734710/c-sharp-crop-circle-in-a-image-or-bitmap*/

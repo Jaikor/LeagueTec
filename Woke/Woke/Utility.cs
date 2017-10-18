@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
+using System.IO;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Aimtec;
 using Rectangle = System.Drawing.Rectangle;
@@ -13,7 +16,7 @@ namespace Woke
     {
         public static Obj_AI_Hero LocalPlayer => ObjectManager.GetLocalPlayer();
         private static HttpClient Http = new HttpClient();
-
+        private static readonly string AppData = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Woke";
         public static bool IsSpecialChampion(this Obj_AI_Hero champion)
         {
             return champion.ChampionName == "Annie" || champion.ChampionName == "Jhin";
@@ -38,24 +41,50 @@ namespace Woke
 
         public static async Task<Bitmap> GetSpellBitmap(string spellName)
         {
-            try
-            {
-                var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png");
-                var stream = await response.Content.ReadAsStreamAsync();
-                return new Bitmap(stream);
-            }
-            catch
-            {
-                Console.WriteLine($"Exception when retrieving spell image for [{spellName}]");
-                return new Bitmap(24, 24);
-            }
+            var bmp = GetImageFromCache(spellName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png");
+            return bmp;
         }
 
         public static async Task<Bitmap> GetChampionBitmap(string championName)
         {
-            var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png");
-            var stream = await response.Content.ReadAsStreamAsync();
-            return new Bitmap(stream);
+            var bmp = GetImageFromCache(championName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png");
+            return bmp;
+        }
+
+        private static Bitmap GetImageFromCache(string spellName)
+        {
+
+            if (!Directory.Exists(AppData))
+                return null;
+            var img = $@"{AppData}\{spellName}.png";
+            return File.Exists(img) ? new Bitmap(img) : null;
+        }
+
+        private static void SaveImageToCache(Image bmp, string name)
+        {
+            if (!Directory.Exists(AppData))
+                Directory.CreateDirectory(AppData);
+            var saveAs = $@"{AppData}\{name}.png";
+            if(!File.Exists(saveAs))
+                bmp.Save(saveAs, ImageFormat.Png);
+        }
+
+        private static async Task<Bitmap> DownloadImageFromCDN(string url)
+        {
+            try
+            {
+                var response = await Http.GetAsync(url);
+                var stream = await response.Content.ReadAsStreamAsync();
+                var bmp = new Bitmap(stream);
+                var imageName = Regex.Match(url, @"\/(\w+)\.png$").Groups[1].Value;
+                SaveImageToCache(bmp, imageName);
+                return new Bitmap(stream);
+            }
+            catch
+            {
+                Console.WriteLine($"Exception when retrieving image for [{url}]");
+                return new Bitmap(24, 24);
+            }
         }
 
         /*https://stackoverflow.com/questions/5734710/c-sharp-crop-circle-in-a-image-or-bitmap*/

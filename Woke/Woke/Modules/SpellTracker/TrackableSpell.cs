@@ -21,9 +21,9 @@ namespace Woke.Modules.SpellTracker
             LoadTextures();
         }
 
-        private void LoadTextures()
+        private async void LoadTextures()
         {
-            var bitmap = Utility.GetSpellBitmap(Spell.Name);
+            var bitmap = await Utility.GetSpellBitmap(Spell.Name);
             var bmp = bitmap.Resize(new Size(24, 24));
             var bmpLarge = bitmap.Resize(new Size(24, 24));
             Active = new Texture(bmp);

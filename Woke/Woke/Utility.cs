@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Aimtec;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -35,12 +36,11 @@ namespace Woke
             return champion.IsSpecialChampion() ? -25 : -20;
         }
 
-        public static Bitmap GetSpellBitmap(string spellName)
+        public static async Task<Bitmap> GetSpellBitmap(string spellName)
         {
             try
             {
-                var response = Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png")
-                    .Result;
+                var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png");
                 return new Bitmap(response.Content.ReadAsStreamAsync().Result);
             }
             catch
@@ -50,9 +50,9 @@ namespace Woke
             }
         }
 
-        public static Bitmap GetChampionBitmap(string championName)
+        public static async Task<Bitmap> GetChampionBitmap(string championName)
         {
-            var response = Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png").Result;
+            var response = await Http.GetAsync($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png");
             return new Bitmap(response.Content.ReadAsStreamAsync().Result);
         }
 

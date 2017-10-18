@@ -18,9 +18,9 @@ namespace Woke.Modules.Maphack
             LoadTexture();
         }
 
-        private void LoadTexture()
+        private async void LoadTexture()
         {
-            var bmp = Utility.GetChampionBitmap(Champion.ChampionName);
+            var bmp = await Utility.GetChampionBitmap(Champion.ChampionName);
             Texture = new Texture(bmp.Resize(new Size(24, 24)).AsGrayscale().ClipToCircle(0, 0, 24));
         }
     }

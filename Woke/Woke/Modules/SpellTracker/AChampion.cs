@@ -32,9 +32,10 @@ namespace Woke.Modules.SpellTracker
             }
         }
 
-        private void LoadTexture()
+        private async void LoadTexture()
         {
-            Texture = new Texture(Utility.GetChampionBitmap(Champion.ChampionName).Resize(new Size(48, 48)));
+            var bmp = await Utility.GetChampionBitmap(Champion.ChampionName);
+            Texture = new Texture(bmp.Resize(new Size(48, 48)));
         }
     }
 }

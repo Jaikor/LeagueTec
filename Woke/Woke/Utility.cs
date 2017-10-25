@@ -51,12 +51,12 @@ namespace Woke
             return bmp;
         }
 
-        private static Bitmap GetImageFromCache(string spellName)
+        private static Bitmap GetImageFromCache(string imageName)
         {
 
             if (!Directory.Exists(AppData))
                 return null;
-            var img = $@"{AppData}\{spellName}.png";
+            var img = $@"{AppData}\{imageName}.png";
             return File.Exists(img) ? new Bitmap(img) : null;
         }
 

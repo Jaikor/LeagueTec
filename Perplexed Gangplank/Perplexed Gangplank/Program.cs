@@ -121,7 +121,7 @@ namespace Perplexed_Gangplank
                 if (barrel.Object.Distance(Player) >= 530 && barrel.Object.Distance(Player) <= 660 && BarrelManager.GetChainedBarrels(barrel).Count == 1) //1 part combo only works at max range.
                 {
                     var enemies = BarrelManager.GetEnemiesInChainRadius(barrel);
-                    var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Health).FirstOrDefault();
+                    var bestEnemy = enemies.Where(x => x.IsValidTarget()).OrderBy(x => x.Distance(barrel.Object)).ThenBy(x => x.Health).FirstOrDefault();
                     if (bestEnemy != null)
                     {
                         var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, barrel);
@@ -463,7 +463,7 @@ namespace Perplexed_Gangplank
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {
-                //Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Chain: {BarrelManager.GetChainedBarrels(barrel).Count}");
+                Render.Text(barrel.ServerPosition.ToScreenPosition(), Color.Red, $"Can Q: {barrel.CanQTime} | {barrel.CanQ}");
                 if (MenuManager.Drawing["drawBarrelExplode"].Enabled)
                     Render.Circle(barrel.ServerPosition, SpellManager.ExplosionRadius, 30, Color.Gold);
                 if (MenuManager.Drawing["drawBarrelChain"].Enabled)

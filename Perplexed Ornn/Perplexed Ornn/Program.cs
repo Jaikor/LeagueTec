@@ -67,9 +67,15 @@ namespace Perplexed_Ornn
 
         private static void Combo()
         {
-            var target = TargetSelector.GetTarget(SpellManager.Q.Range);
+            var target = TargetSelector.GetTarget(SpellManager.R.Range);
             if (target == null)
                 return;
+            var ornnR = GameObjects.Get<MissileClient>().FirstOrDefault(x => x.SpellData.Name == "OrnnRWave");
+            if (ornnR != null)
+            {
+                if (ornnR.ServerPosition.Distance(Player) <= SpellManager.W.Range)
+                    SpellManager.R2.Cast(target);
+            }
             if (MenuManager.Combo["w"].Enabled && target.Distance(Player) <= SpellManager.W.Range && SpellManager.W.Ready)
             {
                 if(!target.HasBuff("OrnnVulnerableDebuff")) //Don't W already brittled targets.

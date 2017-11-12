@@ -13,7 +13,7 @@ namespace Perplexed_Gangplank
         public static float GetDecayRate()
         {
             var level = Player.Level;
-            return level >= 13 ? 0.5f : Player.Level >= 6 ? 1f : 2f;
+            return level >= 13 ? 0.5f : Player.Level >= 7 ? 1f : 2f;
         }
         public static float DistanceFrom(Obj_AI_Base target)
         {

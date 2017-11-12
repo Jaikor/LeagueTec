@@ -72,7 +72,7 @@ namespace Perplexed_Gangplank
         {
 
             var input = SpellManager.E.GetPredictionInput(target);
-            input.Delay = input.Delay * 2;
+            input.Delay = input.Delay + 250;
             var aa = Prediction.Instance.GetPrediction(input);
             if (barrel.Object.Distance(target) <= SpellManager.ChainRadius)
             {

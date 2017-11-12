@@ -18,9 +18,9 @@ namespace Perplexed_Gangplank
         public int NetworkId => Object.NetworkId;
         public float DecayRate;
         public float TimeAt1HP;
-        public float CanQTime => TimeAt1HP - 250f - ((Utility.DistanceFrom(Object) / 2000f) * 1000) + Game.Ping;
+        public float CanQTime => TimeAt1HP - 250f - ((Utility.DistanceFrom(Object) / 2000f) * 1000) + (Game.Ping * 1.5f);
         public bool CanQ => Game.TickCount >= CanQTime || Health == 1;
-        public float CanChainTime => TimeAt1HP - (250f * 2);
+        public float CanChainTime => CanQTime - 250f;
         public bool CanChain => Game.TickCount >= CanChainTime || Health == 1;
         public Barrel(Obj_AI_Base barrel, int created)
         {
@@ -39,7 +39,7 @@ namespace Perplexed_Gangplank
         }
         public static implicit operator Barrel(GameObject barrel)
         {
-            return BarrelManager.Barrels.First(x => x.ServerPosition == barrel.ServerPosition);
+            return BarrelManager.Barrels.FirstOrDefault(x => x.ServerPosition == barrel.ServerPosition);
         }
     }
 }

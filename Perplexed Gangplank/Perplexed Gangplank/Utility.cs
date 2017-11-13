@@ -28,9 +28,9 @@ namespace Perplexed_Gangplank
             var damage = Player.GetSpellDamage(target, SpellSlot.Q);
             var extraDamage = 0f;
             if (Player.HasItem(ItemId.Sheen)  || Player.HasItem(ItemId.IcebornGauntlet))
-                damage += Player.BaseAttackDamage;
+                extraDamage += Player.BaseAttackDamage;
             else if (Player.HasItem(ItemId.TrinityForce))
-                damage += Player.BaseAttackDamage * 2;
+                extraDamage += Player.BaseAttackDamage * 2;
             extraDamage = (float) Player.CalculateDamage(target, DamageType.Physical, extraDamage);
             damage += extraDamage;
             return damage >= target.Health;

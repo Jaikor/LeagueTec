@@ -73,22 +73,22 @@ namespace Perplexed_Gangplank
 
             var input = SpellManager.E.GetPredictionInput(target);
             input.Delay = input.Delay + 250;
-            var aa = Prediction.Instance.GetPrediction(input);
-            if (barrel.Object.Distance(target) <= SpellManager.ChainRadius)
+            var pred = Prediction.Instance.GetPrediction(input);
+            if (MenuManager.Combo["castEMax"].Enabled)
+            {
+                var bestCastPos = barrel.ServerPosition.Extend(usePred ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
+                return bestCastPos;
+            }
+            if (barrel.Object.Distance(pred.UnitPosition) <= SpellManager.ChainRadius)
             {
                 if (usePred)
-                {
-                    var pred = aa;
-                    if(pred.HitChance >= HitChance.Medium)
-                        return pred.UnitPosition;
-                }
-                    return target.ServerPosition;
+                    return pred.UnitPosition;
+                return target.ServerPosition;
             }
-                    
-            if (barrel.Object.Distance(target) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
+
+            if (barrel.Object.Distance(pred.UnitPosition) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)
             {
-                var pred = aa;
-                var bestCastPos = barrel.ServerPosition.Extend(usePred && pred.HitChance >= HitChance.Medium ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
+                var bestCastPos = barrel.ServerPosition.Extend(usePred ? pred.UnitPosition : target.ServerPosition, SpellManager.ChainRadius - 5);
                 return bestCastPos;
             }
             return Vector3.Zero;

@@ -36,6 +36,7 @@ namespace Perplexed_Gangplank
             {
                 Combo = new Menu("combo", "Combo")
                 {
+                    new MenuBool("castEMax", "Always cast E at max connect range"),
                     new MenuBool("triple", "Use triple barrel combo wherever possible"),
                     new MenuBool("explodeQCooldown","Explode barrel with auto attack if Q is on cooldown")
                 };

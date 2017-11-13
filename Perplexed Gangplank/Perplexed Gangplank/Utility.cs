@@ -26,13 +26,13 @@ namespace Perplexed_Gangplank
         public static bool CanKillWithQ(Obj_AI_Base target)
         {
             var damage = Player.GetSpellDamage(target, SpellSlot.Q);
-            var extraDamage = 0f;
-            if (Player.HasItem(ItemId.Sheen)  || Player.HasItem(ItemId.IcebornGauntlet))
-                extraDamage += Player.BaseAttackDamage;
-            else if (Player.HasItem(ItemId.TrinityForce))
-                extraDamage += Player.BaseAttackDamage * 2;
-            extraDamage = (float) Player.CalculateDamage(target, DamageType.Physical, extraDamage);
-            damage += extraDamage;
+            //var extraDamage = 0f;
+            //if (Player.HasItem(ItemId.Sheen)  || Player.HasItem(ItemId.IcebornGauntlet))
+            //    extraDamage += Player.BaseAttackDamage;
+            //else if (Player.HasItem(ItemId.TrinityForce))
+            //    extraDamage += Player.BaseAttackDamage * 2;
+            //extraDamage = (float) Player.CalculateDamage(target, DamageType.Physical, extraDamage);
+            //damage += extraDamage;
             return damage >= target.Health;
         }
         public static double GetRDamage(Obj_AI_Base target, int waves)

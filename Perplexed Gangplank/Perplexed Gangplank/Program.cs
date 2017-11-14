@@ -438,7 +438,7 @@ namespace Perplexed_Gangplank
             if (SpellManager.R.Ready && MenuManager.Killsteal["killstealR"].Enabled)
             {
                 var waves = MenuManager.Killsteal["killstealRWaves"].Value;
-                var target = Utility.GetAllEnemiesInRange(SpellManager.R.Range).Where(x => Utility.CanKillWithR(x, waves) && x.Distance(Player) > SpellManager.Q.Range).OrderBy(x => x.Health).FirstOrDefault();
+                var target = Utility.GetAllEnemiesInRange(SpellManager.R.Range).Where(x => Utility.CanKillWithR(x, waves) && x.Distance(Player) > SpellManager.E2.Range).OrderBy(x => x.Health).FirstOrDefault();
                 if (target != null)
                     SpellManager.R.Cast(target.ServerPosition);
             }

@@ -17,7 +17,8 @@ namespace Perplexed_Gangplank
 {
     public class Program
     {
-        private static Obj_AI_Hero Player;
+        private static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
+        private static int Ammo => Player.SpellBook.GetSpell(SpellSlot.E).Ammo;
         private static int LastECast;
         static void Main(string[] args)
         {
@@ -26,7 +27,6 @@ namespace Perplexed_Gangplank
 
         private static void GameEvents_GameStart()
         {
-            Player = ObjectManager.GetLocalPlayer();
             if (Player.ChampionName != "Gangplank")
                 return;
 
@@ -41,7 +41,6 @@ namespace Perplexed_Gangplank
             Obj_AI_Base.OnProcessAutoAttack += ObjAiBaseOnOnProcessAutoAttack;
             Orbwalker.Implementation.PostAttack += ImplementationOnPostAttack;
             Game.OnUpdate += Game_OnUpdate;
-            Dash.HeroDashed += DashOnHeroDashed;
             Render.OnPresent += Render_OnPresent;
         }
 
@@ -71,43 +70,6 @@ namespace Perplexed_Gangplank
                         barrel.Decay(Game.Ping);
                     else
                         barrel.Decay((int)(e.Start.Distance(e.End) / e.SpellData.MissileSpeed) + Game.Ping);
-                }
-            }
-        }
-
-        private static void DashOnHeroDashed(object sender, Dash.DashArgs dashArgs)
-        {
-            if (dashArgs.Unit is Obj_AI_Hero)
-            {
-                var nearestBarrel = BarrelManager.GetNearestBarrel(dashArgs.EndPos.To3D());
-                if (nearestBarrel != null)
-                {
-                    var chainedBarrels = BarrelManager.GetChainedBarrels(nearestBarrel);
-                    if (chainedBarrels.Any(x => BarrelManager.BarrelWillHit(x, dashArgs.EndPos.To3D())))
-                    {
-                        //If any of the chained barrels will hit, cast Q on best barrel.
-                        var barrelToQ = BarrelManager.GetBestBarrelToQ(chainedBarrels);
-                        if (barrelToQ != null)
-                        {
-                            if (SpellManager.Q.Ready)
-                                SpellManager.Q.Cast(barrelToQ.Object);
-                            else if (barrelToQ.Object.IsInAutoAttackRange() && Orbwalker.Implementation.CanAttack() && MenuManager.Combo["explodeQCooldown"].Enabled)
-                            {
-                                Orbwalker.Implementation.ForceTarget(barrelToQ.Object);
-                                Orbwalker.Implementation.Attack(barrelToQ.Object);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //No chained barrels will hit, so let's chain them.
-                        var bestChainPosition = BarrelManager.GetBestChainPosition(dashArgs.EndPos.To3D(), nearestBarrel);
-                        if (bestChainPosition != Vector3.Zero && dashArgs.EndPos.Distance(Player) <= SpellManager.E.Range && Player.Distance(bestChainPosition) <= SpellManager.E.Range && SpellManager.E.Ready && nearestBarrel.CanChain)
-                        {
-                            Render.Line(nearestBarrel.ServerPosition.ToScreenPosition(), bestChainPosition.ToScreenPosition(), 5, true, Color.Red);
-                            SpellManager.E.Cast(bestChainPosition);
-                        }
-                    }
                 }
             }
         }
@@ -190,7 +152,7 @@ namespace Perplexed_Gangplank
                     {
                         var timeWhenCanE = LastECast + 500;
                         var delay = timeWhenCanE - Game.TickCount;
-                        delay = delay <= 0 ? 0 : delay;
+                        delay = Ammo < 1 ? 0 : delay <= 0 ? 0 : delay;
                         var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
                         DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
                         return;
@@ -252,7 +214,7 @@ namespace Perplexed_Gangplank
                             {
                                 var timeWhenCanE = LastECast + 500;
                                 var delay = timeWhenCanE - Game.TickCount;
-                                delay = delay <= 0 ? 0 : delay;
+                                delay = Ammo < 1 ? 0 : delay <= 0 ? 0 : delay;
                                 var castDelay = MenuManager.Combo["triple"].Enabled ? delay : 0;
                                 DelayAction.Queue(castDelay, () => SpellManager.Q.Cast(barrelToQ.Object));
                                 return;

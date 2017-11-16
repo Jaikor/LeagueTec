@@ -19,6 +19,7 @@ namespace Perplexed_Gangplank
     {
         private static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
         private static int Ammo => Player.SpellBook.GetSpell(SpellSlot.E).Ammo;
+        private static int LastAutoAttack;
         private static int LastQCast;
         private static int LastECast;
         static void Main(string[] args)
@@ -34,6 +35,7 @@ namespace Perplexed_Gangplank
             MenuManager.Initialize();
             SpellManager.Initialize();
 
+            LastAutoAttack = Game.TickCount;
             LastQCast = Game.TickCount;
             LastECast = Game.TickCount;
 
@@ -41,29 +43,30 @@ namespace Perplexed_Gangplank
             GameObject.OnCreate += GameObject_OnCreate;
             Obj_AI_Base.OnProcessSpellCast += ObjAiBaseOnOnProcessSpellCast;
             Obj_AI_Base.OnProcessAutoAttack += ObjAiBaseOnOnProcessAutoAttack;
-            Orbwalker.Implementation.PostAttack += ImplementationOnPostAttack;
+            //Orbwalker.Implementation.PostAttack += ImplementationOnPostAttack;
             Game.OnUpdate += Game_OnUpdate;
             Render.OnPresent += Render_OnPresent;
         }
 
-        private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
-        {
-            if (e.Target == null || !e.Target.IsValid)
-                return;
-            if (e.Target.Name == "Barrel")
-            {
-                var barrel = (Barrel)e.Target;
-                if (barrel != null)
-                {
-                    if (barrel.Health > 1)
-                        barrel.Decay(Game.Ping);
-                }
-            }
-        }
+        //private static void ImplementationOnPostAttack(object o, PostAttackEventArgs e)
+        //{
+        //    if (e.Target == null || !e.Target.IsValid)
+        //        return;
+        //    if (e.Target.Name == "Barrel" && Game.TickCount - LastAutoAttack >= 500)
+        //    {
+        //        LastAutoAttack = Game.TickCount;
+        //        var barrel = (Barrel)e.Target;
+        //        if (barrel != null)
+        //        {
+        //            if (barrel.Health > 1)
+        //                barrel.Decay(Game.Ping);
+        //        }
+        //    }
+        //}
 
         private static void ObjAiBaseOnOnProcessAutoAttack(Obj_AI_Base obj, Obj_AI_BaseMissileClientDataEventArgs e)
         {
-            if (e.Sender.IsMe)
+            if (e.Target == null || !e.Target.IsValid)
                 return;
             if (e.Target.Name == "Barrel")
             {

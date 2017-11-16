@@ -31,7 +31,7 @@ namespace Perplexed_Gangplank
         }
         public void Decay()
         {
-            TimeAt1HP -= 1000 * DecayRate;
+                TimeAt1HP -= 1000 * DecayRate;
         }
         public void Decay(int delay)
         {

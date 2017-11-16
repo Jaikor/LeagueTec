@@ -53,8 +53,11 @@ namespace Perplexed_Gangplank
             if (e.Target.Name == "Barrel")
             {
                 var barrel = (Barrel)e.Target;
-                if (barrel.Health > 1)
-                    barrel.Decay(Game.Ping);
+                if (barrel != null)
+                {
+                    if (barrel.Health > 1)
+                        barrel.Decay(Game.Ping);
+                }
             }
         }
 

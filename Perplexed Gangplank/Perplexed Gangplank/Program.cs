@@ -67,11 +67,13 @@ namespace Perplexed_Gangplank
                 var barrel = (Barrel)e.Target;
                 if (barrel != null)
                 {
-                    if (barrel.Health < 2)
+                    if (barrel.Health > 1)
+                    {
                         if (e.Sender.IsMelee)
                             barrel.Decay(Game.Ping);
                         else
-                            barrel.Decay((int)(e.Start.Distance(e.End) / e.SpellData.MissileSpeed) + Game.Ping);
+                            barrel.Decay((int) (e.Start.Distance(e.End) / e.SpellData.MissileSpeed) + Game.Ping);
+                    }
                 }
             }
         }
@@ -359,6 +361,8 @@ namespace Perplexed_Gangplank
 
         private static void Harass()
         {
+            if (!MenuManager.Harass["harassQ"].Enabled)
+                return;
             var target = TargetSelector.GetTarget(SpellManager.Q.Range);
             var minManaPct = MenuManager.Harass["harassManaPct"].Value;
             if (target.IsValidTarget() && SpellManager.Q.Ready && Player.ManaPercent() >= minManaPct)

@@ -124,7 +124,7 @@ namespace Perplexed_Gangplank
                             if (bestEnemy != null)
                             {
                                 var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, bestBarrel);
-                                if (bestChainPosition != Vector3.Zero && bestChainPosition.Distance(bestBarrel.Object) > SpellManager.ExplosionRadius && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
+                                if (bestChainPosition != Vector3.Zero && bestChainPosition.Distance(bestEnemy) <= SpellManager.ExplosionRadius && bestChainPosition.Distance(bestBarrel.Object) > SpellManager.ExplosionRadius && bestEnemy.IsInRange(SpellManager.E.Range) && Player.Distance(bestChainPosition) <= SpellManager.E.Range)
                                 {
                                     DelayAction.Queue(250, () =>
                                     {

@@ -97,7 +97,8 @@ namespace Perplexed_Gangplank
             {
                 Misc = new Menu("misc", "Misc")
                 {
-                    new MenuBool("aaBarrel", "Auto attack barrels to decay health")
+                    new MenuBool("aaBarrel", "Auto attack barrels to decay health"),
+                    new MenuBool("autoOnePart", "Automatically attempt to 1 part combo")
                 };
                 Root.Add(Misc);
             }

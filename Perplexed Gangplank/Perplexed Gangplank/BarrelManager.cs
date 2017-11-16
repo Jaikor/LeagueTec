@@ -24,9 +24,9 @@ namespace Perplexed_Gangplank
         public static List<Obj_AI_Hero> GetEnemiesInChainRadius(Barrel barrel, bool outsideExplosionRadius = true)
         {
             if (outsideExplosionRadius)
-                return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius && barrel.Object.Distance(x) >= SpellManager.ExplosionRadius && x.Distance(Player) <= SpellManager.E.Range).ToList();
+                return ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius && barrel.Object.Distance(x) >= SpellManager.ExplosionRadius && x.Distance(Player) <= SpellManager.E.Range).ToList();
             else
-                return GameObjects.EnemyHeroes.Where(x => x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius && x.Distance(Player) <= SpellManager.E.Range).ToList();
+                return ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && x.IsValidTarget() && barrel.Object.Distance(x) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius && x.Distance(Player) <= SpellManager.E.Range).ToList();
         }
         public static List<Barrel> GetBarrelsThatWillHit()
         {

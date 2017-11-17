@@ -453,9 +453,9 @@ namespace Perplexed_Gangplank
         private static void Render_OnPresent()
         {
             if (MenuManager.Drawing["drawQ"].Enabled)
-                Render.Circle(Player.ServerPosition, SpellManager.Q.Range, 30, Color.White);
+                Render.Circle(Player.Position, SpellManager.Q.Range, 30, Color.White);
             if (MenuManager.Drawing["drawE"].Enabled)
-                Render.Circle(Player.ServerPosition, SpellManager.E.Range, 30, Color.Orange);
+                Render.Circle(Player.Position, SpellManager.E.Range, 30, Color.Orange);
             //Render.Text(Player.ServerPosition.ToScreenPosition(), Color.Red, $"Barrels will hit: {BarrelManager.GetBarrelsThatWillHit().Count}");
             foreach (var barrel in BarrelManager.Barrels)
             {

@@ -76,7 +76,7 @@ namespace Perplexed_Gangplank
                     if (barrel.Health > 1)
                     {
                         if (e.Sender.IsMelee)
-                            barrel.Decay(Game.Ping);
+                            barrel.Decay((int) ((Player.AttackCastDelay * 1000) + Game.Ping));
                         else
                             barrel.Decay((int) (e.Start.Distance(e.End) / e.SpellData.MissileSpeed) + Game.Ping);
                     }
@@ -120,7 +120,7 @@ namespace Perplexed_Gangplank
                             enemiesCanChainTo = BarrelManager.GetEnemiesInChainRadius(bestBarrel, false);
                         if (enemiesCanChainTo.Count > 0)
                         {
-                            var bestEnemy = enemiesCanChainTo.OrderByDescending(x => x.Distance(Player)).FirstOrDefault();
+                            var bestEnemy = enemiesCanChainTo.OrderBy(x => x.Health).ThenBy(x => x.Distance(Player)).FirstOrDefault();
                             if (bestEnemy != null)
                             {
                                 var bestChainPosition = BarrelManager.GetBestChainPosition(bestEnemy, bestBarrel);
@@ -227,6 +227,8 @@ namespace Perplexed_Gangplank
 
         private static void Combo()
         {
+            if (Orbwalker.Implementation.IsWindingUp)
+                return;
             var target = TargetSelector.GetTarget(SpellManager.E2.Range);
             if (target.IsValidTarget())
             {
@@ -259,7 +261,7 @@ namespace Perplexed_Gangplank
                     else
                     {
                         //No chained barrels will hit, so let's chain them OR try and triple barrel.
-                        if (chainedBarrels.Count >= 2)
+                        if (chainedBarrels.Count >= 2 && MenuManager.Combo["triple"].Enabled)
                         {
                             //There are chained barrels, so let's see if any are in range to be triple comboed.
                             var barrelToComboFrom = chainedBarrels.FirstOrDefault(x => BarrelManager.GetEnemiesInChainRadius(x).Count >= 1);

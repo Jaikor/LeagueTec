@@ -12,6 +12,7 @@ namespace Perplexed_Gangplank
     public static class BarrelManager
     {
         public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
+        public static List<int> CastedBarrels;
         public static List<Barrel> Barrels;
         public static bool BarrelWillHit(Barrel barrel, Obj_AI_Base target)
         {

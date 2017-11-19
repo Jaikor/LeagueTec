@@ -19,7 +19,9 @@ namespace Perplexed_Gangplank
         public float DecayRate;
         public float TimeAt1HP;
         public float CanQTime => TimeAt1HP - 250f - ((Utility.DistanceFrom(Object) / 2000f) * 1000) + (Game.Ping * 1.5f);
+        public float CanAATime => TimeAt1HP - (Utility.Player.AttackDelay * 1000);
         public bool CanQ => Game.TickCount >= CanQTime || Health == 1;
+        public bool CanAA => Game.TickCount >= CanAATime || Health == 1;
         public float CanChainTime => CanQTime - 250f;
         public bool CanChain => Game.TickCount >= CanChainTime || Health == 1;
         public Barrel(Obj_AI_Base barrel, int created)

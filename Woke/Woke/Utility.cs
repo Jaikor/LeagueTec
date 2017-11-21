@@ -41,13 +41,15 @@ namespace Woke
 
         public static async Task<Bitmap> GetSpellBitmap(string spellName)
         {
-            var bmp = GetImageFromCache(spellName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/spell/{spellName}.png");
+            var bmp = GetImageFromCache(spellName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.23.1/img/spell/{spellName}.png");
             return bmp;
         }
 
         public static async Task<Bitmap> GetChampionBitmap(string championName)
         {
-            var bmp = GetImageFromCache(championName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.20.1/img/champion/{championName}.png");
+            if (championName == "FiddleSticks")
+                championName = "Fiddlesticks";
+            var bmp = GetImageFromCache(championName) ?? await DownloadImageFromCDN($"http://ddragon.leagueoflegends.com/cdn/7.23.1/img/champion/{championName}.png");
             return bmp;
         }
 

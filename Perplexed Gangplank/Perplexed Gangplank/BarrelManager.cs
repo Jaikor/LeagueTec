@@ -83,9 +83,7 @@ namespace Perplexed_Gangplank
             }
             if (barrel.Object.Distance(pred.CastPosition) <= SpellManager.ChainRadius)
             {
-                if (usePred)
-                    return pred.CastPosition;
-                return target.ServerPosition;
+                return usePred ? pred.CastPosition : target.ServerPosition;
             }
 
             if (barrel.Object.Distance(pred.CastPosition) <= SpellManager.ChainRadius + SpellManager.ExplosionRadius)

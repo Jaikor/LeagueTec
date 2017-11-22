@@ -75,8 +75,7 @@ namespace Perplexed_Zoe
                         {
                             var qPos = QMissile.ServerPosition;
                             var qPred = SpellManager.Q2.GetPrediction(target, qPos, Player.ServerPosition);
-                            if (qPred.HitChance >= HitChance.High)
-                                SpellManager.Q.Cast(qPred.CastPosition);
+                            SpellManager.Q.Cast(qPred.CastPosition);
                         }
                     }
                 }
@@ -112,8 +111,7 @@ namespace Perplexed_Zoe
                         {
                             var qPos = QMissile.ServerPosition;
                             var qPred = SpellManager.Q2.GetPrediction(target, qPos, Player.ServerPosition);
-                            if (qPred.HitChance >= HitChance.High)
-                                SpellManager.Q.Cast(qPred.CastPosition);
+                            SpellManager.Q.Cast(qPred.CastPosition);
                         }
                     }
                 }
@@ -146,8 +144,7 @@ namespace Perplexed_Zoe
                         {
                             var qPos = QMissile.ServerPosition;
                             var qPred = SpellManager.Q2.GetPrediction(target, qPos, Player.ServerPosition);
-                            if (qPred.HitChance >= HitChance.High)
-                                SpellManager.Q.Cast(qPred.CastPosition);
+                            SpellManager.Q.Cast(qPred.CastPosition);
                         }
                     }
                 }

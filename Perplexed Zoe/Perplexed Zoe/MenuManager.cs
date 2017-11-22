@@ -24,7 +24,8 @@ namespace Perplexed_Zoe
                 Combo = new Menu("combo", "Combo")
                 {
                     new MenuBool("q", "Use Q"),
-                    new MenuBool("e", "Use E")
+                    new MenuBool("e", "Use E"),
+                    new MenuBool("r", "Use R")
                 };
                 Root.Add(Combo);
             }
@@ -34,6 +35,7 @@ namespace Perplexed_Zoe
                 {
                     new MenuBool("q", "Use Q"),
                     new MenuBool("e", "Use E"),
+                    new MenuBool("r", "Use R"),
                     new MenuSlider("mana", "Mana % >=", 50)
                 };
                 Root.Add(Harass);

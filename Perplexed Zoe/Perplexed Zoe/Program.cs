@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Aimtec;
 using Aimtec.SDK.Damage;
 using Aimtec.SDK.Events;
@@ -61,6 +62,11 @@ namespace Perplexed_Zoe
                     if (!QCasted)
                     {
                         var bestCastPos = SpellManager.GetBestQCastPosition(target);
+                        if (SpellManager.R.Ready && MenuManager.Combo["r"].Enabled)
+                        {
+                            SpellManager.R.Cast(bestCastPos);
+                            return;
+                        }
                         SpellManager.Q.Cast(bestCastPos);
                     }
                     else
@@ -88,11 +94,16 @@ namespace Perplexed_Zoe
                 target = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(x => x.IsEnemy && !x.IsDead && x.IsValidTarget() && x.Distance(Portal) <= SpellManager.Q.Range);
             if (target != null)
             {
-                if (MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= MenuManager.Harass["mana"].Value)
+                if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= MenuManager.Harass["mana"].Value)
                 {
                     if (!QCasted)
                     {
                         var bestCastPos = SpellManager.GetBestQCastPosition(target);
+                        if (SpellManager.R.Ready && MenuManager.Harass["r"].Enabled)
+                        {
+                            SpellManager.R.Cast(bestCastPos);
+                            return;
+                        }
                         SpellManager.Q.Cast(bestCastPos);
                     }
                     else
@@ -106,7 +117,7 @@ namespace Perplexed_Zoe
                         }
                     }
                 }
-                if (MenuManager.Combo["e"].Enabled && SpellManager.E.Ready && Player.ManaPercent() >= MenuManager.Harass["mana"].Value)
+                if (MenuManager.Harass["e"].Enabled && SpellManager.E.Ready && Player.ManaPercent() >= MenuManager.Harass["mana"].Value)
                 {
                     SpellManager.E.Cast(target);
                 }

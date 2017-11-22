@@ -52,9 +52,9 @@ namespace Perplexed_Zoe
 
         private static void Combo()
         {
-            var target = TargetSelector.GetTarget(SpellManager.Q.Range);
+            var target = TargetSelector.GetTarget(SpellManager.Q2.Range);
             if (Portal != null)
-                target = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(x => x.IsEnemy && !x.IsDead && x.IsValidTarget() && x.Distance(Portal) <= SpellManager.Q.Range);
+                target = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(x => x.IsEnemy && !x.IsDead && x.IsValidTarget() && x.Distance(Portal) <= SpellManager.Q2.Range);
             if (target != null)
             {
                 if (MenuManager.Combo["q"].Enabled && SpellManager.Q.Ready)
@@ -88,9 +88,9 @@ namespace Perplexed_Zoe
 
         private static void Harass()
         {
-            var target = TargetSelector.GetTarget(SpellManager.Q.Range);
+            var target = TargetSelector.GetTarget(SpellManager.Q2.Range);
             if (Portal != null)
-                target = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(x => x.IsEnemy && !x.IsDead && x.IsValidTarget() && x.Distance(Portal) <= SpellManager.Q.Range);
+                target = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(x => x.IsEnemy && !x.IsDead && x.IsValidTarget() && x.Distance(Portal) <= SpellManager.Q2.Range);
             if (target != null)
             {
                 if (MenuManager.Harass["q"].Enabled && SpellManager.Q.Ready && Player.ManaPercent() >= MenuManager.Harass["mana"].Value)
@@ -126,7 +126,7 @@ namespace Perplexed_Zoe
         {
             if (!MenuManager.Killsteal["q"].Enabled)
                 return;
-            var killables = GameObjects.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && !x.IsDead && Player.GetSpellDamage(x, SpellSlot.Q) > x.Health && x.Distance(Player) <= SpellManager.Q.Range);
+            var killables = GameObjects.Get<Obj_AI_Hero>().Where(x => x.IsEnemy && !x.IsDead && Player.GetSpellDamage(x, SpellSlot.Q) > x.Health && x.Distance(Player) <= SpellManager.Q2.Range);
             foreach (var target in killables)
             {
                 if (SpellManager.Q.GetPrediction(target).HitChance >= HitChance.High && !QCasted)

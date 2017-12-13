@@ -14,7 +14,7 @@ namespace Skin_Changer
 {
     public static class Utility
     {
-        private const string CurrentPatch = "7.23";
+        private const string CurrentPatch = "7.24";
         private static readonly string AppData = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\SkinHax\{CurrentPatch}";
         private static HttpClient Http = new HttpClient();
         public static async Task<string> GetChampionData(string champion)
